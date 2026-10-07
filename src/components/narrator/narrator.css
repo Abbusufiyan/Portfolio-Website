@@ -1,0 +1,236 @@
+.nr-root {
+  --nr-accent: #2563eb;
+  position: fixed;
+  right: 18px;
+  bottom: 14px;
+  width: 210px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  font-family: inherit;
+}
+
+.nr-compact {
+  width: 160px;
+  right: 8px;
+  bottom: 8px;
+}
+
+.nr-stage {
+  width: 100%;
+  height: 250px;
+  pointer-events: auto;
+}
+
+.nr-compact .nr-stage {
+  height: 180px;
+}
+
+.nr-stage canvas {
+  pointer-events: auto;
+}
+
+/* Compact, integrated glass control bar */
+.nr-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: auto;
+  margin-top: -10px;
+  background: rgba(10, 14, 26, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 2px 5px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.nr-controls button,
+.nr-restore {
+  border: 0;
+  cursor: pointer;
+  color: #e2e8f0;
+  background: transparent;
+  border-radius: 999px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  font: 500 10.5px/1 inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+}
+
+.nr-controls button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.nr-controls button.nr-talk {
+  background: rgba(37, 99, 235, 0.25);
+  border: 1px solid rgba(37, 99, 235, 0.4);
+  color: #93c5fd;
+  font-weight: 600;
+  padding: 0 9px;
+}
+
+.nr-controls button.nr-talk:hover {
+  background: rgba(37, 99, 235, 0.45);
+  color: #ffffff;
+  border-color: rgba(37, 99, 235, 0.7);
+}
+
+.nr-controls button:focus-visible,
+.nr-restore:focus-visible {
+  outline: 2px solid #ffd83a;
+  outline-offset: 2px;
+}
+
+.nr-restore {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 50;
+  font-size: 16px;
+  pointer-events: auto;
+  background: rgba(10, 14, 26, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  width: 34px;
+  height: 34px;
+}
+
+.nr-bubble {
+  pointer-events: auto;
+  position: relative;
+  max-width: 210px;
+  margin: 0 0 6px 0;
+  padding: 9px 13px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.94);
+  color: #f8fafc;
+  font-size: 12px;
+  line-height: 1.38;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: nr-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nr-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  margin-left: -5px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+@keyframes nr-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nr-bubble {
+    animation: none;
+  }
+  .nr-chick,
+  .nr-chick * {
+    animation: none !important;
+  }
+}
+
+/* Fallback chick styling */
+.nr-stage:has(.nr-chick),
+.nr-stage:has(.nr-lite-img) {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 130px;
+}
+
+.nr-lite-img {
+  height: 100px;
+  animation: nr-hop 2.4s ease-in-out infinite;
+}
+
+.nr-lite-img.is-talking {
+  animation-duration: 0.6s;
+}
+
+.nr-chick {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50% 50% 46% 46%;
+  background: #ffd83a;
+  box-shadow: inset -6px -8px 0 rgba(0, 0, 0, 0.06);
+  animation: nr-hop 2.4s ease-in-out infinite;
+}
+
+.nr-chick.is-talking {
+  animation-duration: 0.6s;
+}
+
+.nr-chick-helmet {
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: -8px;
+  height: 38px;
+  background: #2563eb;
+  border-radius: 40px 40px 6px 6px;
+}
+
+.nr-chick-eye {
+  position: absolute;
+  top: 36px;
+  width: 10px;
+  height: 14px;
+  background: #1a0906;
+  border-radius: 50%;
+}
+
+.nr-chick-eye.l {
+  left: 22px;
+}
+.nr-chick-eye.r {
+  right: 22px;
+}
+
+.nr-chick-beak {
+  position: absolute;
+  left: 33px;
+  top: 52px;
+  width: 14px;
+  height: 8px;
+  background: #ff7a00;
+  border-radius: 50%;
+}
+
+@keyframes nr-hop {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
