@@ -187,6 +187,7 @@ export function PixelSculptFlowerComponent() {
     });
     renderer.setClearColor(0, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
     stage.insertBefore(renderer.domElement, stage.firstChild);
 
@@ -552,10 +553,30 @@ export function PixelSculptFlowerComponent() {
       stage.removeEventListener('pointerleave', handlePointerLeave);
       stage.removeEventListener('pointerdown', handlePointerDown);
       starTex.dispose();
-      renderer.dispose();
+      
+      scene.traverse((object: any) => {
+        if (object.isMesh || object.isPoints) {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach((m: any) => {
+                if (m.map) m.map.dispose();
+                m.dispose();
+              });
+            } else {
+              if (object.material.map) object.material.map.dispose();
+              object.material.dispose();
+            }
+          }
+        }
+      });
+      scene.clear();
+      
       if (renderer.domElement && renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }
+      renderer.dispose();
+      renderer.forceContextLoss();
     };
   }, []);
 

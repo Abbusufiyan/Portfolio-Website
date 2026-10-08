@@ -59,7 +59,7 @@ export function App() {
   return (
     <NarratorProvider>
       {/* SINGLE GLOBAL BACKGROUND FROM bg.html FOR ENTIRE WEBSITE */}
-      <SmokeBackground intensity={0.14} />
+      {/* <SmokeBackground intensity={0.14} /> */}
 
       {/* VINTAGE ANTIQUE TOP NAVBAR (VISIBLE ON HOME PAGE ONLY) */}
       <VintageNavbar pageState={pageState} onNavigate={handleNavigateFromNavbar} />
@@ -121,8 +121,8 @@ export function App() {
         )}
       </main>
 
-      {/* Global 3D Narrator Character */}
-      <Narrator />
+      {/* Global 3D Narrator Character (Disabled) */}
+      {/* <Narrator /> */}
     </NarratorProvider>
   );
 }

@@ -169,6 +169,8 @@ export function SmokeBackgroundComponent({ intensity = 0.22, className = '' }: S
         gl.deleteProgram(pr);
         gl.deleteShader(vertShader);
         gl.deleteShader(fragShader);
+        
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
       } catch {
         // ignore disposal errors
       }

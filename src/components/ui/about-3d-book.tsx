@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 
 export function About3DBookComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,22 +17,30 @@ export function About3DBookComponent() {
   const closeBookRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const container = containerRef.current;
     const textarea = textareaRef.current;
     const fileInput = fileInputRef.current;
-    if (!canvas || !textarea) return;
+    if (!container || !textarea) return;
 
     let animFrameId: number;
     let renderer: THREE.WebGLRenderer;
 
     try {
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      if (!renderer.getContext()) {
+        setWebGlSupported(false);
+        return;
+      }
     } catch {
       setWebGlSupported(false);
       return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const canvas = renderer.domElement;
+    canvas.className = "block w-full h-full touch-none cursor-grab active:cursor-grabbing";
+    container.insertBefore(canvas, container.firstChild);
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -43,7 +50,7 @@ export function About3DBookComponent() {
     const scene = new THREE.Scene();
     const FOV = 32;
     const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 100);
-    const aniso = renderer.capabilities.getMaxAnisotropy();
+    const aniso = Math.max(1, renderer.capabilities.getMaxAnisotropy() || 1);
 
     // ---------- Dimensions ----------
     const W = 3,
@@ -1023,26 +1030,40 @@ export function About3DBookComponent() {
 
     // ---------- Camera Controller & Render Loop ----------
     function fit(w: number, h: number) {
+      const aspect = camera.aspect && !isNaN(camera.aspect) && isFinite(camera.aspect) && camera.aspect > 0 ? camera.aspect : 1;
       const t = Math.tan((FOV * Math.PI) / 360);
-      return Math.max(h / 2 / t, w / 2 / (t * camera.aspect));
+      const val = Math.max(h / 2 / t, w / 2 / (t * aspect));
+      return isFinite(val) && !isNaN(val) ? val : 12;
     }
 
     function handleResize() {
-      if (!containerRef.current) return;
+      if (!containerRef.current || !renderer || !camera) return;
       const w = containerRef.current.clientWidth;
       const h = containerRef.current.clientHeight;
+      if (w <= 0 || h <= 0) return;
+
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     }
     handleResize();
+
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
     window.addEventListener("resize", handleResize);
 
     let L = 0,
       lastB = -1;
     const clock = new THREE.Clock();
-    const ease = (a: number, b: number, k: number, dt: number) =>
-      a + (b - a) * (1 - Math.exp(-k * dt));
+    const ease = (a: number, b: number, k: number, dt: number) => {
+      const start = isNaN(a) || !isFinite(a) ? b : a;
+      const end = isNaN(b) || !isFinite(b) ? start : b;
+      return start + (end - start) * (1 - Math.exp(-k * dt));
+    };
 
     let isVisible = true;
     let isRunning = true;
@@ -1071,17 +1092,23 @@ export function About3DBookComponent() {
       S.zoom = ease(S.zoom, Tg.zoom, 6, dt);
 
       L = ease(L, openRef.current && tt() > busyUntil - 0.6 ? 1 : 0, 2.2, dt);
-      S.dist = ease(
+      const targetDist = fit(WC * (1.9 + 0.6 * c - 0.35 * L), HC * (1.5 - 0.3 * c - 0.25 * L));
+      const nextDist = ease(
         S.dist,
-        fit(WC * (1.9 + 0.6 * c - 0.35 * L), HC * (1.5 - 0.3 * c - 0.25 * L)),
+        isFinite(targetDist) && !isNaN(targetDist) ? targetDist : 12,
         3,
         dt
       );
+      S.dist = isFinite(nextDist) && !isNaN(nextDist) ? nextDist : 12;
 
       const el = L * (1.02 + (S.pitch - 0.3) * 0.6 + S.my * 0.03),
         d = S.dist * S.zoom;
-      camera.position.set(0, 0.6 * (1 - L) + Math.sin(el) * d, Math.cos(el) * d);
-      camera.lookAt(0, -ZO * 0.5 * L, 0);
+      const camY = 0.6 * (1 - L) + Math.sin(el) * d;
+      const camZ = Math.cos(el) * d;
+      if (isFinite(camY) && isFinite(camZ) && !isNaN(camY) && !isNaN(camZ)) {
+        camera.position.set(0, camY, camZ);
+        camera.lookAt(0, -ZO * 0.5 * L, 0);
+      }
 
       turnTable.rotation.y = (S.yaw + S.mx * 0.04) * L;
       root.rotation.y = (S.yaw + S.mx * 0.05 * (1 - 0.5 * c)) * (1 - L);
@@ -1101,18 +1128,39 @@ export function About3DBookComponent() {
       }
 
       root.position.y = Math.sin(t * 0.8) * 0.04 * (1 - c);
-      renderer.render(scene, camera);
+      try {
+        renderer.render(scene, camera);
+      } catch (e) {
+        // Safe against transient context loss or frame errors
+      }
     }
+
+    let isContextLost = false;
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      isContextLost = true;
+      cancelAnimationFrame(animFrameId);
+    };
+    const handleContextRestored = () => {
+      isContextLost = false;
+      clock.getDelta();
+      handleResize();
+    };
+    canvas.addEventListener("webglcontextlost", handleContextLost, false);
+    canvas.addEventListener("webglcontextrestored", handleContextRestored, false);
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        isVisible = Boolean(entry && entry.isIntersecting);
-        if (isVisible) {
-          clock.getDelta(); // reset delta timer so frame doesn't jump
+        if (entry) {
+          isVisible = entry.isIntersecting;
+          if (isVisible && !isContextLost) {
+            clock.getDelta(); // reset delta timer so frame doesn't jump
+            handleResize();
+          }
         }
       },
-      { threshold: 0.05 }
+      { threshold: 0.01 }
     );
 
     if (containerRef.current) {
@@ -1158,6 +1206,7 @@ export function About3DBookComponent() {
       isRunning = false;
       cancelAnimationFrame(animFrameId);
       observer.disconnect();
+      resizeObserver.disconnect();
       document.removeEventListener('visibilitychange', handleVisibility);
       canvas.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("pointermove", handlePointerMove);
@@ -1165,10 +1214,42 @@ export function About3DBookComponent() {
       canvas.removeEventListener("wheel", handleWheel);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("keydown", handleKeyDown);
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
+      canvas.removeEventListener("webglcontextrestored", handleContextRestored);
       if (fileInput) {
         fileInput.removeEventListener("change", handleFileInputChange);
       }
-      renderer.dispose();
+
+      // Dispose scene resources
+      scene.traverse((obj) => {
+        if ((obj as THREE.Mesh).isMesh) {
+          const mesh = obj as THREE.Mesh;
+          if (mesh.geometry) mesh.geometry.dispose();
+          if (mesh.material) {
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach((m) => {
+                if ('map' in m && (m as any).map) (m as any).map.dispose();
+                if ('bumpMap' in m && (m as any).bumpMap) (m as any).bumpMap.dispose();
+                m.dispose();
+              });
+            } else {
+              if ('map' in mesh.material && (mesh.material as any).map) (mesh.material as any).map.dispose();
+              if ('bumpMap' in mesh.material && (mesh.material as any).bumpMap) (mesh.material as any).bumpMap.dispose();
+              mesh.material.dispose();
+            }
+          }
+        }
+      });
+      scene.clear();
+
+      try {
+        renderer.forceContextLoss();
+        renderer.dispose();
+      } catch (_) {}
+
+      if (canvas.parentNode) {
+        canvas.parentNode.removeChild(canvas);
+      }
     };
   }, []);
 
@@ -1187,9 +1268,6 @@ export function About3DBookComponent() {
       ref={containerRef}
       className="relative w-full h-[650px] sm:h-[750px] lg:h-[820px] max-w-6xl mx-auto flex items-center justify-center overflow-hidden"
     >
-      {/* 3D WebGL Canvas */}
-      <canvas ref={canvasRef} className="block w-full h-full touch-none cursor-grab active:cursor-grabbing" />
-
       {/* WebGL Unsupported Fallback */}
       {!webGlSupported && (
         <div className="absolute inset-0 flex items-center justify-center text-zinc-400 font-mono text-sm italic">

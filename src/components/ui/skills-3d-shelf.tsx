@@ -141,7 +141,7 @@ export function Skills3DShelfComponent() {
       return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -687,7 +687,27 @@ export function Skills3DShelfComponent() {
       if (stageRef.current && renderer.domElement) {
         stageRef.current.removeChild(renderer.domElement);
       }
+      
+      scene.traverse((object: any) => {
+        if (object.isMesh) {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach((m: any) => {
+                if (m.map) m.map.dispose();
+                m.dispose();
+              });
+            } else {
+              if (object.material.map) object.material.map.dispose();
+              object.material.dispose();
+            }
+          }
+        }
+      });
+      scene.clear();
+      
       renderer.dispose();
+      renderer.forceContextLoss();
     };
   }, []);
 

@@ -9,29 +9,59 @@ interface MilestoneItem {
 
 const milestones: MilestoneItem[] = [
   {
-    year: '2021',
-    title: 'Initial Spark',
-    description: 'Began my journey into software development — HTML, CSS, JavaScript fundamentals, and building my first interactive web projects from scratch.'
+    year: 'FEB 2025',
+    title: 'Started Programming',
+    description: 'Started learning C'
   },
   {
-    year: '2022',
-    title: 'Modern Stack Mastery',
-    description: 'Deep-dived into React, TypeScript, REST APIs, and modern front-end engineering best practices to build production-grade applications.'
-  },
-  {
-    year: '2023',
-    title: '3D & Spatial Web',
-    description: 'Mastered Three.js, WebGL shader programming, custom 3D card animations, and interactive real-time web graphics and data visualization.'
-  },
-  {
-    year: '2024',
-    title: 'Production Applications',
-    description: 'Architected full-stack web applications, real-time audio streaming dashboards, and collaborative infinite-canvas tools shipped to production.'
+    year: 'MAY 2025',
+    title: 'Shifted to C++',
+    description: 'Moved from C to C++. Started getting comfortable with OOP concepts and problem solving.'
   },
   {
     year: '2025',
-    title: 'Advanced AI & Systems',
-    description: 'Explored AI agentic workflows, custom developer tooling, and cutting-edge portfolio experiences with fluid 3D interfaces and premium design.'
+    title: 'DSA',
+    description: 'Started Data Structures & Algorithms for academics. Began practicing problem solving.'
+  },
+  {
+    year: 'SEP 2025',
+    title: 'JavaScript',
+    description: 'Completed learning JavaScript.'
+  },
+  {
+    year: 'OCT 2025',
+    title: 'React',
+    description: 'Completed learning React. Started building more interactive web applications.'
+  },
+  {
+    year: 'FEB 2026',
+    title: 'DBMS',
+    description: 'Completed Database Management Systems.'
+  },
+  {
+    year: 'MAR 2026',
+    title: 'OOP',
+    description: 'Completed Object-Oriented Programming.'
+  },
+  {
+    year: 'APR 2026',
+    title: 'Backend',
+    description: 'Completed learning Backend Development with JavaScript.'
+  },
+  {
+    year: 'MAY 2026',
+    title: 'MERN',
+    description: 'Completed the MERN stack. Built Cura — Shopping Project.'
+  },
+  {
+    year: 'JUL 2026',
+    title: 'Music Application',
+    description: 'Completed the Music Application. Worked with frontend + backend integration.'
+  },
+  {
+    year: 'SEP 2026',
+    title: 'Portfolio',
+    description: 'Completed the 3D Interactive Portfolio Website. Combined React, Three.js, animations and interactive 3D experiences.'
   }
 ];
 
@@ -118,171 +148,29 @@ export function MilestoneArchive() {
       });
     }
 
-    /* ── Three.js: each card is a real 3D slab ── */
-    const gls: any[] = [];
-    let raf = 0;
-
-    function makeGL(card: HTMLElement, idx: number) {
-      const w = card.offsetWidth;
-      const h = card.offsetHeight;
-      const pad = 28;
-      const cw = w + pad * 2;
-      const ch = h + pad * 2;
-
-      const canvas = document.createElement('canvas');
-      canvas.className = 'ma-gl';
-      card.prepend(canvas);
-
-      const r = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-      r.setSize(cw, ch, false);
-
-      const scene = new THREE.Scene();
-      const cam = new THREE.PerspectiveCamera(28, cw / ch, 0.1, 50);
-      cam.position.z = ch / 100 / (2 * Math.tan((14 * Math.PI) / 180)) + 0.15;
-
-      const W2 = w / 100 - 0.08;
-      const H2 = h / 100 - 0.08;
-      const R = 0.2;
-      const sh = new THREE.Shape();
-      sh.moveTo(-W2 / 2 + R, -H2 / 2);
-      sh.lineTo(W2 / 2 - R, -H2 / 2);
-      sh.quadraticCurveTo(W2 / 2, -H2 / 2, W2 / 2, -H2 / 2 + R);
-      sh.lineTo(W2 / 2, H2 / 2 - R);
-      sh.quadraticCurveTo(W2 / 2, H2 / 2, W2 / 2 - R, H2 / 2);
-      sh.lineTo(-W2 / 2 + R, H2 / 2);
-      sh.quadraticCurveTo(-W2 / 2, H2 / 2, -W2 / 2, H2 / 2 - R);
-      sh.lineTo(-W2 / 2, -H2 / 2 + R);
-      sh.quadraticCurveTo(-W2 / 2, -H2 / 2, -W2 / 2 + R, -H2 / 2);
-
-      const g = new THREE.ExtrudeGeometry(sh, {
-        depth: 0.22,
-        bevelEnabled: true,
-        bevelThickness: 0.04,
-        bevelSize: 0.04,
-        bevelSegments: 3,
-        curveSegments: 10
+    /* ── CSS 3D Card Interactivity & Pointer Effects ── */
+    cardEls.forEach((card) => {
+      card.addEventListener('pointermove', (e: PointerEvent) => {
+        if (reduce.matches || e.pointerType === 'touch') return;
+        const b = card.getBoundingClientRect();
+        const nx = (e.clientX - b.left) / b.width * 2 - 1;
+        const ny = (e.clientY - b.top) / b.height * 2 - 1;
+        card.style.transform = `perspective(800px) rotateX(${(-ny * 8).toFixed(2)}deg) rotateY(${(nx * 10).toFixed(2)}deg) translateY(-6px) scale(1.02)`;
+        card.style.borderColor = '#3ee69a';
+        card.style.boxShadow = '0 16px 32px -8px rgba(0,0,0,0.8), 0 0 20px rgba(62,230,154,0.3)';
       });
-      g.translate(0, 0, -0.11);
-
-      const mesh = new THREE.Mesh(g, [
-        new THREE.MeshStandardMaterial({ color: 0x0e1713, roughness: 0.5, metalness: 0.25 }),
-        new THREE.MeshStandardMaterial({
-          color: 0x1b2c22,
-          roughness: 0.35,
-          metalness: 0.4,
-          emissive: 0x3ee69a,
-          emissiveIntensity: 0.6
-        })
-      ]);
-
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(g, 35),
-        new THREE.LineBasicMaterial({ color: 0xd8ffb4, transparent: true, opacity: 0.9 })
-      );
-
-      const grp = new THREE.Group();
-      grp.add(mesh, edges);
-      scene.add(grp);
-
-      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-      const key = new THREE.DirectionalLight(0xeaffe0, 0.9);
-      key.position.set(-2, 3, 5);
-      scene.add(key);
-
-      const rim = new THREE.PointLight(0x2fe08c, 1.5, 9);
-      rim.position.set(0, -1.6, 2.2);
-      scene.add(rim);
-
-      card.classList.add('ma-card-gl');
-      return {
-        card, canvas, r, scene, cam, grp, key, rim, g, w, h,
-        txt: card.querySelector<HTMLElement>('.ma-txt'),
-        dir: idx % 2 ? 1 : -1,
-        rx: 0, ry: 0, z: 0, tx: 0, ty: 0, tz: 0,
-        vis: false, t0: -1, ph: idx * 1.7
-      };
-    }
-
-    function draw(o: any, now: number, t: number) {
-      const e = reduce.matches ? 1 : Math.min((now - o.t0) / 1200, 1);
-      const c1 = 1.5;
-      const ease = e >= 1 ? 1 : 1 + (c1 + 1) * Math.pow(e - 1, 3) + c1 * Math.pow(e - 1, 2);
-      const k = 1 - ease;
-      const sw = reduce.matches ? 0 : 1;
-      o.rx += (o.tx - o.rx) * 0.1;
-      o.ry += (o.ty - o.ry) * 0.1;
-      o.z += (o.tz - o.z) * 0.1;
-      const bob = sw * Math.sin(t * 1.1 + o.ph) * 0.05;
-      const rx = o.rx + sw * Math.sin(t * 0.8 + o.ph) * 0.03 + o.dir * 0.5 * k;
-      const ry = o.ry + sw * Math.sin(t * 0.6 + o.ph) * 0.05 - 1.1 * k;
-      const z = o.z - 1.4 * k;
-      o.grp.rotation.set(rx, ry, 0);
-      o.grp.position.set(0, bob, z);
-      if (o.txt) {
-        o.txt.style.opacity = String(Math.min(1, Math.max(0, (e - 0.35) / 0.4)));
-        o.txt.style.transform = `perspective(900px) translate3d(0,${(-bob * 100).toFixed(1)}px,${(z * 100).toFixed(1)}px) rotateX(${(-rx * 57.3).toFixed(2)}deg) rotateY(${(ry * 57.3).toFixed(2)}deg)`;
-      }
-      o.r.render(o.scene, o.cam);
-    }
-
-    function frame(now: number) {
-      if (!raf) return;
-      raf = requestAnimationFrame(frame);
-      gls.forEach((o) => { if (o.vis && o.t0 >= 0) draw(o, now, now / 1000); });
-    }
-
-    function loop(on: boolean) {
-      if (on && !raf && !reduce.matches) raf = requestAnimationFrame(frame);
-      if (!on) { cancelAnimationFrame(raf); raf = 0; }
-    }
-
-    try {
-      cardEls.forEach((card, i) => {
-        const o = makeGL(card, i);
-        gls.push(o);
-        (card as any)._gl = o;
-
-        card.addEventListener('pointermove', (e: PointerEvent) => {
-          const gl = (card as any)._gl;
-          if (reduce.matches || e.pointerType === 'touch' || !gl) return;
-          const b = card.getBoundingClientRect();
-          const nx = (e.clientX - b.left) / b.width * 2 - 1;
-          const ny = (e.clientY - b.top) / b.height * 2 - 1;
-          gl.ty = nx * 0.3; gl.tx = ny * 0.22; gl.tz = 0.3;
-          gl.key.position.set(nx * 3, 2 - ny * 3, 5);
-          gl.rim.position.x = nx * 2;
-        });
-        card.addEventListener('pointerleave', () => {
-          const gl = (card as any)._gl;
-          if (!gl) return;
-          gl.tx = gl.ty = gl.tz = 0;
-          gl.key.position.set(-2, 3, 5);
-          gl.rim.position.x = 0;
-        });
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+        card.style.borderColor = '';
+        card.style.boxShadow = '';
       });
-    } catch (err) {
-      console.warn('3D cards unavailable, using flat cards', err);
-      cardEls.forEach((c) => {
-        c.classList.remove('ma-card-gl');
-        c.querySelectorAll('canvas').forEach((x) => x.remove());
-      });
-      gls.length = 0;
-    }
+    });
 
-    /* node glow + 3D entrance on scroll */
+    /* node glow on scroll */
     const io = new IntersectionObserver(
       (es) => es.forEach((e) => {
         const c = e.target as any;
-        const o = c._gl;
         if (c._node) c._node.classList.toggle('on', e.isIntersecting);
-        if (o) {
-          o.vis = e.isIntersecting;
-          if (e.isIntersecting && o.t0 < 0) {
-            o.t0 = performance.now();
-            if (reduce.matches) draw(o, o.t0, 0);
-          }
-        }
       }),
       { root: scroller, threshold: 0.35 }
     );
@@ -290,7 +178,6 @@ export function MilestoneArchive() {
 
     const trackIo = new IntersectionObserver((e) => {
       track!.classList.toggle('off', !e[0].isIntersecting);
-      loop(e[0].isIntersecting);
     });
     trackIo.observe(track!);
 
@@ -327,23 +214,11 @@ export function MilestoneArchive() {
     /* resize: rebuild strand, rebuild slabs if card size changed */
     const ro = new ResizeObserver(() => {
       buildStrand();
-      gls.forEach((o, i) => {
-        const c = o.card;
-        if (c.offsetWidth !== o.w || c.offsetHeight !== o.h) {
-          const keep = { vis: o.vis, t0: o.t0, tx: o.tx, ty: o.ty };
-          o.r.dispose(); o.g.dispose(); o.canvas.remove();
-          const n = makeGL(c, i);
-          Object.assign(n, keep);
-          gls[i] = n; (c as any)._gl = n;
-          io.unobserve(c); io.observe(c);
-        }
-      });
     });
     ro.observe(track);
     buildStrand();
 
     return () => {
-      loop(false);
       io.disconnect();
       trackIo.disconnect();
       ro.disconnect();
@@ -352,10 +227,6 @@ export function MilestoneArchive() {
       scroller.removeEventListener('pointerdown', onDown);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
-      gls.forEach((o) => {
-        try { o.r.dispose(); o.g.dispose(); } catch (_) {}
-        if (o.canvas?.parentNode) o.canvas.remove();
-      });
     };
   }, []);
 

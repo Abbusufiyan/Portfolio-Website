@@ -377,7 +377,7 @@ export function Spiral3DSliderComponent({
       >
         <div className="absolute inset-0">
           <Canvas
-            dpr={[1, 1.75]}
+            dpr={[1, 1.5]}
             camera={{ position: [0, 0, 10], fov, near: 0.1, far: 100 }}
             gl={{
               alpha: true,
