@@ -185,7 +185,7 @@ function SpiralScene({
     sceneItems.map((item) => item.src),
   );
   const { gl, viewport } = useThree();
-  const progress = useRef(0);
+  const progress = useRef(-8);
   const meshes = useRef<(Mesh | null)[]>([]);
   const materials = useRef<(ShaderMaterial | null)[]>([]);
 
@@ -300,7 +300,7 @@ export function Spiral3DSliderComponent({
   autoSpeed = 0.13,
   scrollSensitivity = 0.0024,
   smoothing = 0.065,
-  blurStrength = 1.65,
+  blurStrength = 0,
   bend = 0.17,
   fov = 44,
   ariaLabel = "Spiral image gallery",
