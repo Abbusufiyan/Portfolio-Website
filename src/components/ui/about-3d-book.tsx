@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import ownPhoto from '@/assets/images/own.png';
 
 export function About3DBookComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -329,7 +330,7 @@ export function About3DBookComponent() {
     const PROFILE = {
       name: "Abu Sufiyan",
       title: "Software Engineer",
-      photo: "/images/own.png",
+      photo: ownPhoto,
       intro:
         "Hi, I'm Abu Sufiyan, a passionate software enthusiast who enjoys turning complex ideas into clean, well-crafted applications — from C++ programs to modern full-stack web experiences.",
       skills: [

@@ -4,14 +4,20 @@ import { SmallPortfolioTypography } from '@/components/ui/small-portfolio-typogr
 import { BigPortfolioTypography } from '@/components/ui/big-portfolio-typography';
 import { VintageNavbar } from '@/components/ui/vintage-navbar';
 
+import photo1 from '@/assets/images/portfolio/IMG_20261008_152804.jpg';
+import photo2 from '@/assets/images/portfolio/IMG_20261008_154852.png';
+import photo3 from '@/assets/images/portfolio/IMG_20261008_155221.png';
+import photo4 from '@/assets/images/portfolio/Image.jpeg';
+import photo5 from '@/assets/images/portfolio/fg.jpeg';
+
 import { HomePage } from '@/components/home-page';
 
 const slides: Spiral3DSlide[] = [
-  { src: "/images/portfolio/IMG_20261008_152804.jpg", alt: "Personal Photo 1" },
-  { src: "/images/portfolio/IMG_20261008_154852.png", alt: "Personal Photo 2" },
-  { src: "/images/portfolio/IMG_20261008_155221.png", alt: "Personal Photo 3" },
-  { src: "/images/portfolio/Image.jpeg", alt: "Personal Photo 4" },
-  { src: "/images/portfolio/fg.jpeg", alt: "Personal Photo 5" },
+  { src: photo1, alt: "Personal Photo 1" },
+  { src: photo2, alt: "Personal Photo 2" },
+  { src: photo3, alt: "Personal Photo 3" },
+  { src: photo4, alt: "Personal Photo 4" },
+  { src: photo5, alt: "Personal Photo 5" },
 ];
 
 export function App() {

@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import musicAppImg from '@/assets/images/music-app-img.png';
+import portfolioImg from '@/assets/images/portfolio-website-img.png';
 
 export interface ProjectItem {
   title: string;
@@ -17,7 +19,7 @@ export const defaultProjects: ProjectItem[] = [
     title: "Aura Music Streaming Platform",
     category: "Full-Stack Web Application",
     description: "A modern, secure, full-stack music streaming platform built with React and Node.js, featuring an interactive music player, JWT-based authentication, dynamic playlists, and immersive 3D audio-reactive visuals.",
-    image: "/img/music-app-img.png",
+    image: musicAppImg,
     technologies: ["React & TypeScript", "Tailwind & Vite", "Node.js & Express.js", "MySQL", "JWT & bcrypt", "WebGL / OGL"],
     features: [
       "Interactive music player and immersive audio-reactive visualizations",
@@ -35,7 +37,7 @@ export const defaultProjects: ProjectItem[] = [
     title: "Developer Portfolio",
     category: "Interactive Web Experience",
     description: "A highly dynamic interactive developer portfolio featuring 3D Three.js visual showcases, particle animations, and custom UI components.",
-    image: "/img/portfolio-website-img.png",
+    image: portfolioImg,
     technologies: ["React", "TypeScript", "Three.js", "Tailwind CSS", "Framer Motion"],
     features: [
       "Interactive 3D Book biography showcase",
@@ -51,7 +53,7 @@ export const defaultProjects: ProjectItem[] = [
     title: "Aura Music Streaming Platform",
     category: "Full-Stack Web Application",
     description: "A modern, secure, full-stack music streaming platform built with React and Node.js, featuring an interactive music player, JWT-based authentication, dynamic playlists, and immersive 3D audio-reactive visuals.",
-    image: "/img/music-app-img.png",
+    image: musicAppImg,
     technologies: ["React & TypeScript", "Tailwind & Vite", "Node.js & Express.js", "MySQL", "JWT & bcrypt", "WebGL / OGL"],
     features: [
       "Interactive music player and immersive audio-reactive visualizations",
@@ -69,7 +71,7 @@ export const defaultProjects: ProjectItem[] = [
     title: "Developer Portfolio",
     category: "Interactive Web Experience",
     description: "A highly dynamic interactive developer portfolio featuring 3D Three.js visual showcases, particle animations, and custom UI components.",
-    image: "/img/portfolio-website-img.png",
+    image: portfolioImg,
     technologies: ["React", "TypeScript", "Three.js", "Tailwind CSS", "Framer Motion"],
     features: [
       "Interactive 3D Book biography showcase",
@@ -85,7 +87,7 @@ export const defaultProjects: ProjectItem[] = [
     title: "Aura Music Streaming Platform",
     category: "Full-Stack Web Application",
     description: "A modern, secure, full-stack music streaming platform built with React and Node.js, featuring an interactive music player, JWT-based authentication, dynamic playlists, and immersive 3D audio-reactive visuals.",
-    image: "/img/music-app-img.png",
+    image: musicAppImg,
     technologies: ["React & TypeScript", "Tailwind & Vite", "Node.js & Express.js", "MySQL", "JWT & bcrypt", "WebGL / OGL"],
     features: [
       "Interactive music player and immersive audio-reactive visualizations",
