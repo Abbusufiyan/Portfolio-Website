@@ -14,18 +14,20 @@ export interface ProjectItem {
 
 export const defaultProjects: ProjectItem[] = [
   {
-    title: "StreamWave",
-    category: "Web Application",
-    description: "A modern music streaming dashboard and web app featuring an interactive audio player, dynamic playlists, and real-time audio visualization.",
+    title: "Aura Music Streaming Platform",
+    category: "Full-Stack Web Application",
+    description: "A modern, secure, full-stack music streaming platform built with React and Node.js, featuring an interactive music player, JWT-based authentication, dynamic playlists, and immersive 3D audio-reactive visuals.",
     image: "/img/music-app-img.png",
-    technologies: ["React", "TypeScript", "Tailwind CSS", "Web Audio API"],
+    technologies: ["React & TypeScript", "Tailwind & Vite", "Node.js & Express.js", "MySQL", "JWT & bcrypt", "WebGL / OGL"],
     features: [
-      "Interactive audio player with live waveform visualizer",
-      "Custom dynamic playlists and queue management",
-      "Real-time audio frequency analyzer",
-      "Sleek dark mode glassmorphic interface"
+      "Interactive music player and immersive audio-reactive visualizations",
+      "Secure user authentication using JWT and bcrypt",
+      "Backend APIs powered by Node.js and Express.js",
+      "MySQL database integration",
+      "Dedicated music asset processing and metadata pipeline",
+      "Modern dark-themed interface with 3D visual effects"
     ],
-    github: "https://github.com/",
+    github: "https://github.com/Abbusufiyan/Music",
     liveDemo: "https://music-six-lemon.vercel.app/",
     hue: 28
   },
@@ -41,57 +43,61 @@ export const defaultProjects: ProjectItem[] = [
       "Custom WebGL canvas shaders & particle background",
       "Built-in floating dock & persistent background music player"
     ],
-    github: "https://github.com/",
-    liveDemo: "https://music-six-lemon.vercel.app/",
+    github: "https://github.com/Abbusufiyan/Portfolio-Website",
+    liveDemo: "https://portfolio-website.vercel.app/",
     hue: 200
   },
   {
-    title: "Paper Trail",
-    category: "Full-Stack Platform",
-    description: "A document workflow engine that turns messy PDFs into searchable, tagged knowledge bases with a fast keyboard-first interface.",
-    image: "/images/portfolio/slide-04.jpeg",
-    technologies: ["Next.js", "TypeScript", "Prisma", "Redis"],
+    title: "Aura Music Streaming Platform",
+    category: "Full-Stack Web Application",
+    description: "A modern, secure, full-stack music streaming platform built with React and Node.js, featuring an interactive music player, JWT-based authentication, dynamic playlists, and immersive 3D audio-reactive visuals.",
+    image: "/img/music-app-img.png",
+    technologies: ["React & TypeScript", "Tailwind & Vite", "Node.js & Express.js", "MySQL", "JWT & bcrypt", "WebGL / OGL"],
     features: [
-      "Automated PDF parsing & keyword tag extraction",
-      "Keyboard-first search navigation & instant indexing",
-      "High-speed Redis cache layer for document queries",
-      "Collaborative document annotation workspace"
+      "Interactive music player and immersive audio-reactive visualizations",
+      "Secure user authentication using JWT and bcrypt",
+      "Backend APIs powered by Node.js and Express.js",
+      "MySQL database integration",
+      "Dedicated music asset processing and metadata pipeline",
+      "Modern dark-themed interface with 3D visual effects"
     ],
-    github: "https://github.com/",
-    liveDemo: "https://example.com",
-    hue: 150
+    github: "https://github.com/Abbusufiyan/Music",
+    liveDemo: "https://music-six-lemon.vercel.app/",
+    hue: 28
   },
   {
-    title: "Orbit Board",
-    category: "Creative / WebGL",
-    description: "Infinite multiplayer whiteboard supporting low-latency sticky notes, freehand drawing, and live cursor streaming.",
-    image: "/images/portfolio/slide-05.jpeg",
-    technologies: ["React", "WebSockets", "Canvas API", "Tailwind CSS"],
+    title: "Developer Portfolio",
+    category: "Interactive Web Experience",
+    description: "A highly dynamic interactive developer portfolio featuring 3D Three.js visual showcases, particle animations, and custom UI components.",
+    image: "/img/portfolio-website-img.png",
+    technologies: ["React", "TypeScript", "Three.js", "Tailwind CSS", "Framer Motion"],
     features: [
-      "Real-time multi-user cursor tracking & syncing",
-      "High-performance infinite 2D canvas engine",
-      "Custom vector drawing tools and shape manipulation",
-      "Instant export to SVG, PNG, and PDF formats"
+      "Interactive 3D Book biography showcase",
+      "3D Orbit Archive project showcase",
+      "Custom WebGL canvas shaders & particle background",
+      "Built-in floating dock & persistent background music player"
     ],
-    github: "https://github.com/",
-    liveDemo: "https://example.com",
-    hue: 300
+    github: "https://github.com/Abbusufiyan/Portfolio-Website",
+    liveDemo: "https://portfolio-website.vercel.app/",
+    hue: 200
   },
   {
-    title: "Night Shift",
-    category: "API / Backend",
-    description: "Dark-themed developer utility console for log parsing, curl request inspecting, and JSON schema formatting.",
-    image: "/images/portfolio/slide-06.jpeg",
-    technologies: ["Electron", "React", "TypeScript", "Monaco Editor"],
+    title: "Aura Music Streaming Platform",
+    category: "Full-Stack Web Application",
+    description: "A modern, secure, full-stack music streaming platform built with React and Node.js, featuring an interactive music player, JWT-based authentication, dynamic playlists, and immersive 3D audio-reactive visuals.",
+    image: "/img/music-app-img.png",
+    technologies: ["React & TypeScript", "Tailwind & Vite", "Node.js & Express.js", "MySQL", "JWT & bcrypt", "WebGL / OGL"],
     features: [
-      "Real-time log stream filtering and regex search",
-      "Interactive JSON tree inspector with diff comparison",
-      "cURL command importer and REST API generator",
-      "Custom syntax highlighting powered by Monaco Editor"
+      "Interactive music player and immersive audio-reactive visualizations",
+      "Secure user authentication using JWT and bcrypt",
+      "Backend APIs powered by Node.js and Express.js",
+      "MySQL database integration",
+      "Dedicated music asset processing and metadata pipeline",
+      "Modern dark-themed interface with 3D visual effects"
     ],
-    github: "https://github.com/",
-    liveDemo: "https://example.com",
-    hue: 350
+    github: "https://github.com/Abbusufiyan/Music",
+    liveDemo: "https://music-six-lemon.vercel.app/",
+    hue: 28
   }
 ];
 
@@ -456,7 +462,7 @@ export function CRTProjectsShowcaseComponent() {
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div id="projects-section-3d" data-narrator-section="projects" className="w-full bg-transparent text-[#efeae0]">
+    <div id="projects-section-3d" data-narrator-section="projects" className="relative w-full bg-transparent text-[#efeae0]">
       {/* Embedded Scoped CSS matching project-section.html */}
       <style>{`
         #projects-section-3d {
@@ -840,6 +846,16 @@ export function CRTProjectsShowcaseComponent() {
           }
         }
       `}</style>
+
+      {/* Top Header Bar */}
+      <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 sm:px-12 py-6 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-zinc-500">03 /</span>
+          <div className="font-semibold text-lg sm:text-2xl tracking-tight text-white m-0 p-0" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+            Projects Archive
+          </div>
+        </div>
+      </header>
 
       {/* Main Section */}
       <section

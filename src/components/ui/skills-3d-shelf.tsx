@@ -17,100 +17,100 @@ export interface SkillBook {
 
 const SKILLS_DATA: SkillBook[] = [
   {
-    title: "C++ & Systems",
-    subtitle: "Low-Level & Memory Management",
+    title: "C++",
+    subtitle: "SYSTEMS & PROGRAMMING",
     colorA: "#1d9aa8",
     colorB: "#e09a5a",
     textColor: "#ffffff",
-    blurb: "Deeply invested in C++, system programming, and Data Structures & Algorithms. Understanding memory layouts, pointers, hardware interaction, and OS kernels.",
+    blurb: "Low-level system programming, memory management, and high-performance computing.",
     category: "Systems Engineering",
     level: "Advanced Core",
     experience: "Core Competency",
-    tag: "cpp-systems"
+    tag: "cpp"
   },
   {
-    title: "Linux & Shell",
-    subtitle: "Filesystems, Bash & Kernel",
+    title: "DSA IN C++",
+    subtitle: "DATA STRUCTURES & ALGORITHMS",
     colorA: "#2a2a2d",
     colorB: "#555555",
     textColor: "#e7e2d6",
-    blurb: "Linux is my native operating environment. From shell scripting and process automation to system calls, memory management, and file systems.",
-    category: "Operating Systems",
-    level: "Daily Driver",
-    experience: "Native Environment",
-    tag: "linux-os"
-  },
-  {
-    title: "DSA & Algorithms",
-    subtitle: "Problem Solving & Optimization",
-    colorA: "#cdbf80",
-    colorB: "#3a3a98",
-    textColor: "#1f2f66",
     blurb: "Mastering complex algorithmic problems, dynamic programming, graph algorithms, and time/space complexity optimization.",
     category: "Computer Science",
     level: "Problem Solver",
     experience: "Continuous Practice",
-    tag: "dsa-algorithms"
+    tag: "dsa"
   },
   {
-    title: "Full-Stack Web",
-    subtitle: "React, Node.js & TypeScript",
+    title: "JAVASCRIPT",
+    subtitle: "WEB PROGRAMMING",
+    colorA: "#cdbf80",
+    colorB: "#3a3a98",
+    textColor: "#1f2f66",
+    blurb: "Core language of the web. Building dynamic, interactive web experiences and robust client-side logic.",
+    category: "Web Architecture",
+    level: "Proficient",
+    experience: "Daily Use",
+    tag: "javascript"
+  },
+  {
+    title: "REACT",
+    subtitle: "FRONTEND DEVELOPMENT",
     colorA: "#3a6a8a",
     colorB: "#7aa4c0",
     textColor: "#f1ece0",
-    blurb: "Building modern, ultra-responsive web applications with React, Vite, Next.js, Tailwind, REST APIs, and Node.js backends.",
-    category: "Web Architecture",
-    level: "Full Stack",
+    blurb: "Building modern, ultra-responsive web applications with reusable components, state management, and hooks.",
+    category: "Frontend UI",
+    level: "Advanced",
     experience: "Production Ready",
-    tag: "fullstack-dev"
+    tag: "react"
   },
   {
-    title: "AI & Neural Nets",
-    subtitle: "Deep Learning & Models",
+    title: "NODE / EXPRESS",
+    subtitle: "BACKEND DEVELOPMENT",
     colorA: "#325c3a",
     colorB: "#80b088",
     textColor: "#eef3e2",
-    blurb: "Exploring AI from first principles — backpropagation, loss functions, PyTorch models, and intelligent agent architectures.",
-    category: "Intelligent Systems",
+    blurb: "Designing scalable server-side architectures, middleware, and efficient event-driven backends.",
+    category: "Backend Services",
     level: "Practitioner",
-    experience: "Active Research",
-    tag: "ai-ml"
+    experience: "Core Utility",
+    tag: "node-express"
   },
   {
-    title: "Python Engineering",
-    subtitle: "Automation & Data Pipelines",
+    title: "MYSQL",
+    subtitle: "DATABASE MANAGEMENT",
     colorA: "#d1912c",
     colorB: "#f0c070",
     textColor: "#2a1a08",
-    blurb: "Writing clean, idiomatic Python for rapid prototyping, data transformation, async scripting, web scraping, and microservices.",
-    category: "Scripting & Backend",
-    level: "Proficient",
-    experience: "Core Utility",
-    tag: "python-dev"
-  },
-  {
-    title: "Git & DevOps",
-    subtitle: "Workflows & Containers",
-    colorA: "#b8332a",
-    colorB: "#e0803a",
-    textColor: "#f6e3c8",
-    blurb: "Branching strategies, CI/CD pipeline automation, Docker containerization, and clean version control practices.",
-    category: "DevOps & Tools",
-    level: "Workflow Core",
-    experience: "Daily Use",
-    tag: "git-devops"
-  },
-  {
-    title: "Databases & Storage",
-    subtitle: "PostgreSQL, MongoDB & Redis",
-    colorA: "#4d3a7a",
-    colorB: "#8a70b8",
-    textColor: "#f0e6ff",
-    blurb: "Designing normalized schemas, query indexing, ACID transactions, document storage, and high-speed in-memory caches.",
+    blurb: "Designing relational schemas, optimizing complex queries, and ensuring data integrity with ACID compliance.",
     category: "Data Systems",
     level: "Schema Architect",
     experience: "Backend Core",
-    tag: "databases"
+    tag: "mysql"
+  },
+  {
+    title: "REST API",
+    subtitle: "API DEVELOPMENT",
+    colorA: "#b8332a",
+    colorB: "#e0803a",
+    textColor: "#f6e3c8",
+    blurb: "Building robust, stateless APIs for seamless client-server communication and data exchange.",
+    category: "Architecture",
+    level: "Workflow Core",
+    experience: "Daily Use",
+    tag: "rest-api"
+  },
+  {
+    title: "JWT",
+    subtitle: "AUTHENTICATION & SECURITY",
+    colorA: "#4d3a7a",
+    colorB: "#8a70b8",
+    textColor: "#f0e6ff",
+    blurb: "Implementing secure token-based authentication, authorization flows, and session management.",
+    category: "Security",
+    level: "Practitioner",
+    experience: "Production Ready",
+    tag: "jwt"
   }
 ];
 
@@ -752,23 +752,6 @@ export function Skills3DShelfComponent() {
           </div>
         </header>
 
-        {/* Vertical Nav Ticks on Left Edge */}
-        <nav
-          className="fixed left-6 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2.5 pointer-events-auto"
-          aria-label="Skill Volumes Navigation"
-        >
-          {SKILLS_DATA.map((item, idx) => (
-            <button
-              key={item.tag}
-              onClick={() => handleNavClick(idx)}
-              title={item.title}
-              className={cn(
-                "w-4 h-1 rounded-full transition-all duration-300 bg-zinc-700 hover:bg-white",
-                activeNavIndex === idx && "bg-white w-6 h-1.5 shadow-[0_0_10px_rgba(255,255,255,0.8)]"
-              )}
-            />
-          ))}
-        </nav>
 
         {/* 3D WebGL Stage Container */}
         <div ref={stageRef} className="absolute inset-0 z-10 w-full h-full cursor-grab active:cursor-grabbing" />
@@ -784,7 +767,7 @@ export function Skills3DShelfComponent() {
         <div
           id="skill-detail-panel"
           className={cn(
-            "fixed z-40 top-1/2 right-[4vw] sm:right-[6vw] w-full max-w-[420px] -translate-y-1/2 p-6 sm:p-8 rounded-2xl border border-white/15 bg-black/80 backdrop-blur-xl shadow-2xl transition-all duration-500 ease-out pointer-events-none opacity-0 translate-x-12",
+            "absolute z-40 top-1/2 right-[4vw] sm:right-[6vw] w-full max-w-[420px] -translate-y-1/2 p-6 sm:p-8 rounded-2xl border border-white/15 bg-black/80 backdrop-blur-xl shadow-2xl transition-all duration-500 ease-out pointer-events-none opacity-0 translate-x-12",
             currentSkill && "opacity-100 translate-x-0 pointer-events-auto",
             "max-h-[85vh] overflow-y-auto"
           )}
@@ -851,7 +834,7 @@ export function Skills3DShelfComponent() {
         <button
           onClick={closeDetail}
           className={cn(
-            "fixed top-6 right-6 z-50 px-4 py-2 rounded-full border border-white/20 bg-black/70 backdrop-blur-md text-xs font-mono text-white transition-all duration-300 opacity-0 pointer-events-none hover:border-white/50",
+            "absolute top-6 right-6 z-50 px-4 py-2 rounded-full border border-white/20 bg-black/70 backdrop-blur-md text-xs font-mono text-white transition-all duration-300 opacity-0 pointer-events-none hover:border-white/50",
             currentSkill && "opacity-100 pointer-events-auto"
           )}
         >

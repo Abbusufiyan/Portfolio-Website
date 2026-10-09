@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSectionNavigation } from '@/hooks/useSectionNavigation';
 import { Skills3DShelf } from '@/components/ui/skills-3d-shelf';
 import { About3DBook } from '@/components/ui/about-3d-book';
 import { CRTProjectsShowcase } from '@/components/ui/crt-projects-showcase';
@@ -7,6 +8,17 @@ import { ContactEnvelope } from '@/components/ui/contact-envelope';
 import { PixelSculptFlower } from '@/components/ui/pixel-sculpt-flower';
 
 export function HomePageComponent() {
+  const sections = useMemo(() => [
+    'about',
+    'skills',
+    'projects-section-3d',
+    'milestone-archive',
+    'contact',
+    'pixel-flower'
+  ], []);
+
+  useSectionNavigation(sections);
+
   return (
     <>
       {/* ── 1. About Me Section (Interactive 3D Book) ── */}

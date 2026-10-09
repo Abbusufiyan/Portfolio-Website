@@ -292,7 +292,8 @@ export function MilestoneArchive() {
           left: 50%;
           margin-left: -120px;
           width: 240px;
-          height: 200px;
+          height: auto;
+          min-height: 200px;
         }
         #milestone-archive .ma-item:nth-child(odd) .ma-card { bottom: calc(50% + 78px); }
         #milestone-archive .ma-item:nth-child(even) .ma-card { top: calc(50% + 78px); }
@@ -310,7 +311,7 @@ export function MilestoneArchive() {
         }
         #milestone-archive .ma-txt {
           position: relative;
-          height: 100%;
+          height: auto;
           padding: 24px 24px;
           transform-origin: 50% 50%;
           will-change: transform;

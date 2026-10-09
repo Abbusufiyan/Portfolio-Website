@@ -6,18 +6,13 @@ import { SmokeBackground } from '@/components/ui/smoke-background';
 import { VintageNavbar } from '@/components/ui/vintage-navbar';
 
 import { HomePage } from '@/components/home-page';
-import { NarratorProvider, Narrator } from '@/components/narrator';
 
 const slides: Spiral3DSlide[] = [
-  { src: "/images/portfolio/slide-01.jpeg", alt: "Fight Club" },
-  { src: "/images/portfolio/slide-02.jpeg", alt: "Bruce Wayne" },
-  { src: "/images/portfolio/slide-03.jpeg", alt: "Loki Laufeyson Icon" },
-  { src: "/images/portfolio/slide-04.jpeg", alt: "PLAN B Aesthetic" },
-  { src: "/images/portfolio/slide-05.jpeg", alt: "Shah Rukh Khan Aesthetic Black" },
-  { src: "/images/portfolio/slide-06.jpeg", alt: "Aesthetic Portrait 1" },
-  { src: "/images/portfolio/slide-07.jpeg", alt: "Aesthetic Portrait 2" },
-  { src: "/images/portfolio/slide-08.jpeg", alt: "Aesthetic Visual 3" },
-  { src: "/images/portfolio/slide-09.jpeg", alt: "Crescent Moon Icon" },
+  { src: "/images/portfolio/IMG_20261008_152804.jpg", alt: "Personal Photo 1" },
+  { src: "/images/portfolio/IMG_20261008_154852.png", alt: "Personal Photo 2" },
+  { src: "/images/portfolio/IMG_20261008_155221.png", alt: "Personal Photo 3" },
+  { src: "/images/portfolio/Image.jpeg", alt: "Personal Photo 4" },
+  { src: "/images/portfolio/fg.jpeg", alt: "Personal Photo 5" },
 ];
 
 export function App() {
@@ -57,7 +52,7 @@ export function App() {
   }, []);
 
   return (
-    <NarratorProvider>
+    <>
       {/* SINGLE GLOBAL BACKGROUND FROM bg.html FOR ENTIRE WEBSITE */}
       {/* <SmokeBackground intensity={0.14} /> */}
 
@@ -120,10 +115,7 @@ export function App() {
           </>
         )}
       </main>
-
-      {/* Global 3D Narrator Character (Disabled) */}
-      {/* <Narrator /> */}
-    </NarratorProvider>
+    </>
   );
 }
 
