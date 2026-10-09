@@ -1,8 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Spiral3DSlider, type Spiral3DSlide } from '@/components/ui/spiral-3d-slider';
 import { SmallPortfolioTypography } from '@/components/ui/small-portfolio-typography';
 import { BigPortfolioTypography } from '@/components/ui/big-portfolio-typography';
-import { SmokeBackground } from '@/components/ui/smoke-background';
 import { VintageNavbar } from '@/components/ui/vintage-navbar';
 
 import { HomePage } from '@/components/home-page';
@@ -16,13 +15,13 @@ const slides: Spiral3DSlide[] = [
 ];
 
 export function App() {
-  // User flow states: 'hero' -> 'focused' -> 'home'
-  const [pageState, setPageState] = useState<'hero' | 'focused' | 'home'>('hero');
+  // User flow states: 'focused' -> 'hero' -> 'home'
+  const [pageState, setPageState] = useState<'focused' | 'hero' | 'home'>('focused');
 
   const handlePageClick = useCallback(() => {
     setPageState((prev) => {
-      if (prev === 'hero') return 'focused';
-      if (prev === 'focused') return 'home';
+      if (prev === 'focused') return 'hero';
+      if (prev === 'hero') return 'home';
       return prev;
     });
   }, []);
@@ -53,9 +52,6 @@ export function App() {
 
   return (
     <>
-      {/* SINGLE GLOBAL BACKGROUND FROM bg.html FOR ENTIRE WEBSITE */}
-      {/* <SmokeBackground intensity={0.14} /> */}
-
       {/* VINTAGE ANTIQUE TOP NAVBAR (VISIBLE ON HOME PAGE ONLY) */}
       <VintageNavbar pageState={pageState} onNavigate={handleNavigateFromNavbar} />
 
@@ -110,7 +106,7 @@ export function App() {
 
             {/* Click hints */}
             <div className="fixed bottom-4 left-6 z-20 text-[11px] font-mono text-zinc-500 tracking-wider pointer-events-none opacity-60">
-              {pageState === 'hero' ? '[ CLICK ANYWHERE TO FOCUS ]' : '[ CLICK ANYWHERE TO ENTER HOME PAGE ]'}
+              {pageState === 'focused' ? '[ CLICK ANYWHERE TO CONTINUE ]' : '[ CLICK ANYWHERE TO ENTER HOME PAGE ]'}
             </div>
           </>
         )}

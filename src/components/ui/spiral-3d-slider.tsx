@@ -245,9 +245,10 @@ function SpiralScene({
       const distance = Math.min(Math.abs(position) / (count * 0.43), 1);
       const scale = 0.74 + depth * 0.26;
 
+      const yDrop = position > 0 ? Math.pow(position, 1.8) * gap * 0.4 : 0;
       mesh.position.set(
         Math.sin(angle) * spiralRadius,
-        -position * gap,
+        -position * gap - yDrop,
         Math.cos(angle) * 2.55,
       );
       mesh.rotation.set(0, Math.sin(angle) * -1.12, 0);

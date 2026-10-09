@@ -118,7 +118,6 @@ export function Skills3DShelfComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [activeNavIndex, setActiveNavIndex] = useState<number>(0);
   const [webGlSupported, setWebGlSupported] = useState<boolean>(true);
 
   // References for state management inside high-frequency animation loops
@@ -577,8 +576,6 @@ export function Skills3DShelfComponent() {
       // Smooth lerp to target book index driven strictly by captured wheel events
       cur += (targetCurRef.current - cur) * 0.12;
 
-      const currentNavIdx = Math.round(cl(cur, 0, N - 1));
-      setActiveNavIndex(selRef.current >= 0 ? selRef.current : currentNavIdx);
 
       camera.position.set(0, 3.3 - m * 2.1, camera.userData.z);
       camera.lookAt(0, 0.15 * (1 - m), 0);
@@ -712,13 +709,7 @@ export function Skills3DShelfComponent() {
   }, []);
 
 
-  const handleNavClick = (index: number) => {
-    if (selectedIndex !== null) {
-      selRef.current = -1;
-      setSelectedIndex(null);
-    }
-    targetCurRef.current = index;
-  };
+
 
   const closeDetail = () => {
     selRef.current = -1;

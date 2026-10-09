@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { cn } from "@/lib/utils";
 
 export function About3DBookComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [hintText, setHintText] = useState<string>("Click the book to open it · drag to rotate");
   const [webGlSupported, setWebGlSupported] = useState<boolean>(true);
 
   // References to track state without triggering re-renders in animation loop
@@ -224,28 +221,6 @@ export function About3DBookComponent() {
       return t;
     };
 
-    const pageTex = (title: string, n: number) =>
-      mk(512, 720, (g, w, h) => {
-        g.fillStyle = "#f1e9d4";
-        g.fillRect(0, 0, w, h);
-        const gr = g.createLinearGradient(0, 0, 90, 0);
-        gr.addColorStop(0, "rgba(60,40,20,.25)");
-        gr.addColorStop(1, "rgba(60,40,20,0)");
-        g.fillStyle = gr;
-        g.fillRect(0, 0, 90, h);
-        g.fillStyle = "#3a3226";
-        g.textAlign = "center";
-        g.font = `italic 34px ${SERIF}`;
-        g.fillText(title, w / 2 + 10, 130);
-        g.fillRect(w / 2 - 30, 152, 80, 2);
-        for (let i = 0; i < 17; i++) {
-          const lw = (i % 6 === 5 ? 0.5 : 1) * (340 + hash(i + n) * 40);
-          g.fillStyle = "rgba(58,50,38,.5)";
-          g.fillRect(90, 215 + i * 22, lw, 5);
-        }
-        g.font = `22px ${SERIF}`;
-        g.fillText(String(n), w / 2 + 10, h - 50);
-      });
 
     // ---------- Materials ----------
     const clothSide = new THREE.MeshStandardMaterial({ color: 0x1b342d, roughness: 0.9 });
@@ -280,7 +255,6 @@ export function About3DBookComponent() {
     // ---------- Geometry Helpers ----------
     function coverGeo(w: number, h: number) {
       const s = new THREE.Shape(),
-        x0 = 0,
         y0 = -h / 2;
       s.moveTo(R, y0);
       s.lineTo(w - R, y0);
@@ -354,16 +328,17 @@ export function About3DBookComponent() {
     // ---------- Profile Data ----------
     const PROFILE = {
       name: "Abu Sufiyan",
-      title: "Software & Systems Engineer",
+      title: "Software Engineer",
       photo: "/images/own.png",
       intro:
-        "Hi, I'm Abu Sufiyan, a passionate software enthusiast and systems engineer who turns complex ideas into clear, well-crafted products, from low-level C++ applications to modern 3D web experiences.",
+        "Hi, I'm Abu Sufiyan, a passionate software enthusiast who enjoys turning complex ideas into clean, well-crafted applications — from C++ programs to modern full-stack web experiences.",
       skills: [
-        "Systems Engineering & C++",
-        "Linux & Operating Systems",
+        "C++ & Systems Programming",
+        "DBMS & MySQL",
         "Full-Stack Web Development",
-        "AI & Neural Networks",
+        "Linux & Operating Systems",
         "Data Structures & Algorithms",
+        "Web Application Development",
       ],
     };
 
@@ -886,7 +861,6 @@ export function About3DBookComponent() {
 
     function openBook() {
       openRef.current = true;
-      setIsOpen(true);
       busyUntil = tt() + 3.5;
       anim(cov, 1, 0, 1.4, eio);
       const dl = [1, 1.25, 1.5, 1.85, 2.3],
@@ -894,7 +868,6 @@ export function About3DBookComponent() {
       for (let i = 0; i < K; i++) anim(sheets[i], 1, dl[i], du[i], eioS);
       Tg.yaw = 0.04;
       Tg.pitch = 0.3;
-      setHintText("Click the right page to turn it · drag to tilt");
     }
 
     function closeBook() {
@@ -910,11 +883,9 @@ export function About3DBookComponent() {
       blurNote();
       spread = 0;
       openRef.current = false;
-      setIsOpen(false);
       Tg.yaw = 0.62;
       Tg.pitch = 0.2;
       Tg.zoom = 1;
-      setHintText("Click the book to open it · drag to rotate");
     }
 
     closeBookRef.current = closeBook;
@@ -925,11 +896,7 @@ export function About3DBookComponent() {
       spread = n;
       busyUntil = tt() + 1.1;
       anim(sheets[K], n, 0, 0.95, eioS);
-      setHintText(
-        n
-          ? "Click the writing area to type · drag to tilt"
-          : "Click the right page to turn it · drag to tilt"
-      );
+      anim(sheets[K], n, 0, 0.95, eioS);
     }
 
     turnToRef.current = turnTo;
@@ -972,6 +939,13 @@ export function About3DBookComponent() {
     const rightMesh = () => sheets[K + spread].h.children[0] as THREE.Mesh;
 
     function pageClick(h: THREE.Intersection) {
+      const lp = inner.worldToLocal(h.point.clone());
+      if (lp.x < -0.1) {
+        blurNote();
+        closeBook();
+        return;
+      }
+
       if (h.object === rightMesh() && (h.face as any)?.materialIndex === 4 && h.uv) {
         const x = h.uv.x * 640,
           y = (1 - h.uv.y) * 896,
@@ -1252,16 +1226,6 @@ export function About3DBookComponent() {
       }
     };
   }, []);
-
-  const handleAddPhotoClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    fileInputRef.current?.click();
-  };
-
-  const handleCloseBookClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    closeBookRef.current?.();
-  };
 
   return (
     <div

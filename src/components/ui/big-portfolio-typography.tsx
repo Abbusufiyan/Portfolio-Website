@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export interface BigPortfolioTypographyProps {
     className?: string;
@@ -207,7 +207,7 @@ export function BigPortfolioTypography({
     return (
         <div
             ref={containerRef}
-            className={cn("relative inline-flex items-center justify-center select-none w-96 h-28 sm:w-[640px] sm:h-40", className)}
+            className={cn("relative inline-flex items-center justify-center select-none w-[480px] h-[200px] sm:w-[800px] sm:h-[300px]", className)}
         >
             <canvas ref={canvasRef} className="block w-full h-full" />
         </div>

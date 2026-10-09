@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export interface SmallPortfolioTypographyProps {
     className?: string;
