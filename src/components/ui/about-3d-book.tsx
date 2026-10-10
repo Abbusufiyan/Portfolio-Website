@@ -97,7 +97,7 @@ export function About3DBookComponent() {
     };
 
     const coverTex = mk(1024, 1404, (g, w, h) => {
-      g.fillStyle = "#1f3a33";
+      g.fillStyle = "#020617";
       g.fillRect(0, 0, w, h);
       for (let y = 0; y < h; y += 3) {
         g.fillStyle = "rgba(0,0,0,.09)";
@@ -160,7 +160,7 @@ export function About3DBookComponent() {
     });
 
     const backTex = mk(1024, 1404, (g, w, h) => {
-      g.fillStyle = "#1f3a33";
+      g.fillStyle = "#020617";
       g.fillRect(0, 0, w, h);
       for (let y = 0; y < h; y += 3) {
         g.fillStyle = "rgba(0,0,0,.09)";
@@ -182,7 +182,7 @@ export function About3DBookComponent() {
     });
 
     const spineTex = mk(256, 1024, (g, w, h) => {
-      g.fillStyle = "#1b332d";
+      g.fillStyle = "#0f172a";
       g.fillRect(0, 0, w, h);
       for (let y = 0; y < h; y += 3) {
         g.fillStyle = "rgba(0,0,0,.1)";
@@ -191,7 +191,7 @@ export function About3DBookComponent() {
       g.shadowColor = "rgba(0,0,0,.6)";
       g.shadowBlur = 4;
       g.shadowOffsetY = 1;
-      g.fillStyle = "#c4a057";
+      g.fillStyle = "#cbd5e1";
       [70, 110, h - 110, h - 70].forEach((y) => g.fillRect(24, y, w - 48, 5));
       g.translate(w / 2, h / 2);
       g.rotate(Math.PI / 2);
@@ -206,7 +206,7 @@ export function About3DBookComponent() {
 
     const edgeTex = (vert: boolean) => {
       const t = mk(256, 256, (g, w, h) => {
-        g.fillStyle = "#e9dfc4";
+        g.fillStyle = "#f1f5f9";
         g.fillRect(0, 0, w, h);
         for (let i = 0; i < w; i++) {
           const a = 0.04 + hash(i) * 0.18;
@@ -214,7 +214,7 @@ export function About3DBookComponent() {
           vert ? g.fillRect(i, 0, 1, h) : g.fillRect(0, i, w, 1);
         }
         for (let i = 0; i < 2500; i++) {
-          g.fillStyle = "rgba(120,90,50,.04)";
+          g.fillStyle = "rgba(148,163,184,.04)";
           g.fillRect(hash(i) * w, hash(i + 4) * h, 3, 1);
         }
       });
@@ -224,7 +224,7 @@ export function About3DBookComponent() {
 
 
     // ---------- Materials ----------
-    const clothSide = new THREE.MeshStandardMaterial({ color: 0x1b342d, roughness: 0.9 });
+    const clothSide = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 });
     const mFront = new THREE.MeshStandardMaterial({
       map: coverTex,
       bumpMap: coverTex,
@@ -245,13 +245,13 @@ export function About3DBookComponent() {
       roughness: 0.7,
       side: THREE.DoubleSide,
     });
-    const paper = new THREE.MeshStandardMaterial({ color: 0xefe6d0, roughness: 0.95 });
-    const endpaper = new THREE.MeshStandardMaterial({ color: 0xd8cfb4, roughness: 0.95 });
+    const paper = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.95 });
+    const endpaper = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.95 });
     const eV = edgeTex(true),
       eH = edgeTex(false);
     const mEdgeX = new THREE.MeshStandardMaterial({ map: eV, bumpMap: eV, bumpScale: 1.2, roughness: 0.95 });
     const mEdgeY = new THREE.MeshStandardMaterial({ map: eH, bumpMap: eH, bumpScale: 1.2, roughness: 0.95 });
-    const glue = new THREE.MeshStandardMaterial({ color: 0x3a2e22, roughness: 1 });
+    const glue = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 1 });
 
     // ---------- Geometry Helpers ----------
     function coverGeo(w: number, h: number) {
@@ -326,20 +326,19 @@ export function About3DBookComponent() {
     spine.position.x = 0;
     inner.add(spine);
 
-    // ---------- Profile Data ----------
     const PROFILE = {
       name: "Abu Sufiyan",
-      title: "Software Engineer",
+      title: "Full Stack Web Developer",
       photo: ownPhoto,
       intro:
-        "Hi, I'm Abu Sufiyan, a passionate software enthusiast who enjoys turning complex ideas into clean, well-crafted applications — from C++ programs to modern full-stack web experiences.",
+        "Hello! I am Abu Sufiyan, a detail-oriented web developer dedicated to building responsive, scalable, and visually stunning web applications. I love transforming complex problems into elegant digital solutions.",
       skills: [
-        "C++ & Systems Programming",
-        "DBMS & MySQL",
-        "Full-Stack Web Development",
-        "Linux & Operating Systems",
-        "Data Structures & Algorithms",
-        "Web Application Development",
+        "React & Next.js Ecosystem",
+        "Node.js & Backend Architecture",
+        "3D Web Graphics (Three.js)",
+        "Database Design & Management",
+        "Modern CSS & Tailwind",
+        "REST APIs & GraphQL",
       ],
     };
 
@@ -362,10 +361,10 @@ export function About3DBookComponent() {
     };
 
     const paperBase = (g: CanvasRenderingContext2D, w: number, h: number, gr_: boolean) => {
-      g.fillStyle = "#f1e9d4";
+      g.fillStyle = "#f8fafc";
       g.fillRect(0, 0, w, h);
       for (let i = 0; i < 2500; i++) {
-        g.fillStyle = `rgba(110,85,50,${hash(i) * 0.05})`;
+        g.fillStyle = `rgba(100,116,139,${hash(i) * 0.05})`;
         g.fillRect(hash(i + 1) * w, hash(i + 2) * h, 2, 2);
       }
       const gr = g.createLinearGradient(gr_ ? w : 0, 0, gr_ ? w - 80 : 80, 0);
@@ -408,14 +407,14 @@ export function About3DBookComponent() {
     };
 
     const header = (g: CanvasRenderingContext2D, w: number, t: string) => {
-      g.fillStyle = "#8a7a5c";
+      g.fillStyle = "#64748b";
       g.font = `15px ${SERIF}`;
       spaced(g, t, w / 2, 64, 3);
       g.fillRect(70, 78, w - 140, 1);
     };
 
     const folio = (g: CanvasRenderingContext2D, w: number, h: number, n: number) => {
-      g.fillStyle = "#6b5d46";
+      g.fillStyle = "#475569";
       g.font = `italic 20px ${SERIF}`;
       g.textAlign = "center";
       g.fillText(String(n), w / 2, h - 46);
@@ -429,9 +428,9 @@ export function About3DBookComponent() {
       fw: number,
       fh: number
     ) => {
-      g.fillStyle = "#fbf6e8";
+      g.fillStyle = "#ffffff";
       g.fillRect(fx - 12, fy - 12, fw + 24, fh + 24);
-      g.strokeStyle = "#6b5d46";
+      g.strokeStyle = "#475569";
       g.lineWidth = 1.5;
       g.strokeRect(fx - 12, fy - 12, fw + 24, fh + 24);
       g.strokeStyle = "rgba(107,93,70,.45)";
@@ -457,9 +456,9 @@ export function About3DBookComponent() {
         g.beginPath();
         g.rect(fx, fy, fw, fh);
         g.clip();
-        g.fillStyle = "#d9d0ba";
+        g.fillStyle = "#e2e8f0";
         g.fillRect(fx, fy, fw, fh);
-        g.strokeStyle = "rgba(90,75,50,.2)";
+        g.strokeStyle = "rgba(71,85,105,.2)";
         for (let i = -fh; i < fw; i += 18) {
           g.beginPath();
           g.moveTo(fx + i, fy + fh);
@@ -467,7 +466,7 @@ export function About3DBookComponent() {
           g.stroke();
         }
         g.restore();
-        g.fillStyle = "#6b5d46";
+        g.fillStyle = "#475569";
         g.textAlign = "center";
         g.font = `italic ${(fw / 9) | 0}px ${SERIF}`;
         g.fillText("Abu Sufiyan", fx + fw / 2, fy + fh / 2);
@@ -480,16 +479,16 @@ export function About3DBookComponent() {
     const tAL = faceTex((g, w, h) => {
       paperBase(g, w, h, true);
       header(g, w, "ABU SUFIYAN — PORTFOLIO");
-      g.fillStyle = "#8a7a5c";
+      g.fillStyle = "#64748b";
       g.font = `16px ${SERIF}`;
       spaced(g, "PROFILE", w / 2 - 10, 128, 6);
       pic(g, 130, 160, 360, 450);
-      g.fillStyle = "#2a251c";
+      g.fillStyle = "#0f172a";
       g.font = `bold 34px ${SERIF}`;
       spaced(g, PROFILE.name.toUpperCase(), w / 2 - 10, 688, 6);
-      g.fillStyle = "#9a7b3c";
+      g.fillStyle = "#94a3b8";
       g.fillRect(w / 2 - 40, 712, 60, 2);
-      g.fillStyle = "#5a4e3a";
+      g.fillStyle = "#334155";
       g.font = `italic 24px ${SERIF}`;
       g.textAlign = "center";
       g.fillText(PROFILE.title, w / 2 - 10, 758);
@@ -499,26 +498,26 @@ export function About3DBookComponent() {
     const tAbout = faceTex((g, w, h) => {
       paperBase(g, w, h, false);
       header(g, w, "ABU SUFIYAN — PORTFOLIO");
-      g.fillStyle = "#2a251c";
+      g.fillStyle = "#0f172a";
       g.font = `bold 48px ${SERIF}`;
       spaced(g, "ABOUT ME", w / 2 + 10, 196, 8);
-      g.fillStyle = "#9a7b3c";
+      g.fillStyle = "#94a3b8";
       g.fillRect(w / 2 - 30, 222, 80, 3);
-      g.fillStyle = "#2f2a20";
+      g.fillStyle = "#0f172a";
       g.font = `italic 25px ${SERIF}`;
       wrap(g, PROFILE.intro, 84, 288, w - 154, 40);
-      g.fillStyle = "#8a7a5c";
+      g.fillStyle = "#64748b";
       g.font = `16px ${SERIF}`;
       spaced(g, "FOCUS AREAS", w / 2 + 10, 560, 5);
       g.font = `23px ${SERIF}`;
       PROFILE.skills.forEach((s, i) => {
-        g.fillStyle = "#9a7b3c";
+        g.fillStyle = "#94a3b8";
         g.fillRect(90, 604 + i * 44 - 9, 8, 8);
-        g.fillStyle = "#2f2a20";
+        g.fillStyle = "#0f172a";
         g.textAlign = "left";
         g.fillText(s, 116, 604 + i * 44);
       });
-      g.fillStyle = "#9a7b3c";
+      g.fillStyle = "#94a3b8";
       g.font = `italic 18px ${SERIF}`;
       g.textAlign = "right";
       g.fillText("turn the page ›", w - 70, h - 44);
@@ -531,7 +530,7 @@ export function About3DBookComponent() {
       header(g, w, "ABU SUFIYAN — PORTFOLIO");
       const cx = w / 2 - 10,
         cy = 360;
-      g.strokeStyle = "#9a7b3c";
+      g.strokeStyle = "#94a3b8";
       g.lineWidth = 1.6;
       [90, 64, 38].forEach((r) => {
         g.beginPath();
@@ -544,7 +543,7 @@ export function About3DBookComponent() {
       g.lineTo(cx - 78, cy + 45);
       g.closePath();
       g.stroke();
-      g.fillStyle = "#4a4130";
+      g.fillStyle = "#1e293b";
       g.font = `italic 28px ${SERIF}`;
       g.textAlign = "center";
       g.fillText("A book is only half-written", cx, 560);
@@ -577,24 +576,24 @@ export function About3DBookComponent() {
     const tAR = faceTex((g, w, h) => {
       paperBase(g, w, h, false);
       header(g, w, "THE GUESTBOOK");
-      g.fillStyle = "#2a251c";
+      g.fillStyle = "#0f172a";
       g.font = `bold 32px ${SERIF}`;
       spaced(g, "WHAT'S ON YOUR MIND?", w / 2 + 10, 160, 4);
-      g.fillStyle = "#9a7b3c";
+      g.fillStyle = "#94a3b8";
       g.fillRect(w / 2 - 40, 184, 100, 2);
-      g.fillStyle = "#5a4e3a";
+      g.fillStyle = "#334155";
       g.font = `italic 24px ${SERIF}`;
       g.textAlign = "center";
       g.fillText("Write whatever is in your mind…", w / 2 + 10, 228);
       const [ax, ay, aw, ah] = NOTE.area;
       if (noteFocus) {
-        g.fillStyle = "rgba(154,123,60,.08)";
+        g.fillStyle = "rgba(148,163,184,.08)";
         g.fillRect(ax, ay, aw, ah);
       }
-      g.strokeStyle = "rgba(90,75,50,.4)";
+      g.strokeStyle = "rgba(71,85,105,.4)";
       g.lineWidth = 1;
       g.strokeRect(ax, ay, aw, ah);
-      g.strokeStyle = "rgba(90,75,50,.28)";
+      g.strokeStyle = "rgba(71,85,105,.28)";
       for (let i = 0; i < 9; i++) {
         g.beginPath();
         g.moveTo(ax + 10, ay + 40 + i * 38);
@@ -605,11 +604,11 @@ export function About3DBookComponent() {
       g.textAlign = "left";
       const txt = textarea.value;
       if (!txt && !noteFocus) {
-        g.fillStyle = "rgba(60,55,45,.5)";
+        g.fillStyle = "rgba(30,41,59,.5)";
         g.fillText("Write here…", ax + 16, ay + 33);
       } else {
         const L = noteLines(g, txt, aw - 34).slice(-9);
-        g.fillStyle = "#26304f";
+        g.fillStyle = "#020617";
         L.forEach((l, i) => g.fillText(l, ax + 16, ay + 33 + i * 38));
         if (noteFocus && Math.floor(performance.now() / 500) % 2 === 0) {
           const i = L.length - 1;
@@ -628,15 +627,15 @@ export function About3DBookComponent() {
         g.textAlign = "center";
         g.fillText(sentMsg, w / 2 + 10, by + 34);
       } else {
-        g.strokeStyle = "#6b5d46";
+        g.strokeStyle = "#475569";
         g.lineWidth = 1.5;
         g.strokeRect(bx, by, bw, bh);
         g.strokeRect(bx + 4, by + 4, bw - 8, bh - 8);
-        g.fillStyle = "#2a251c";
+        g.fillStyle = "#0f172a";
         g.font = `18px ${SERIF}`;
         spaced(g, "LEAVE A NOTE", bx + bw / 2, by + 33, 4);
       }
-      g.fillStyle = "#9a7b3c";
+      g.fillStyle = "#94a3b8";
       g.font = `italic 18px ${SERIF}`;
       g.textAlign = "left";
       g.fillText("‹ back", 70, h - 44);
@@ -682,7 +681,7 @@ export function About3DBookComponent() {
         paperBase(g, w, h, r);
         header(g, w, "ABU SUFIYAN — PORTFOLIO");
         for (let i = 0; i < 22; i++) {
-          g.fillStyle = "rgba(58,50,38,.35)";
+          g.fillStyle = "rgba(15,23,42,.35)";
           g.fillRect(
             70,
             160 + i * 28,

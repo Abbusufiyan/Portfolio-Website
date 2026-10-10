@@ -3,6 +3,7 @@ import { Spiral3DSlider, type Spiral3DSlide } from '@/components/ui/spiral-3d-sl
 import { SmallPortfolioTypography } from '@/components/ui/small-portfolio-typography';
 import { BigPortfolioTypography } from '@/components/ui/big-portfolio-typography';
 import { VintageNavbar } from '@/components/ui/vintage-navbar';
+import { VintageCVButton } from '@/components/ui/vintage-cv-button';
 
 import photo1 from '@/assets/images/portfolio/IMG_20261008_152804.jpg';
 import photo2 from '@/assets/images/portfolio/IMG_20261008_154852.png';
@@ -11,6 +12,7 @@ import photo4 from '@/assets/images/portfolio/Image.jpeg';
 import photo5 from '@/assets/images/portfolio/fg.jpeg';
 
 import { HomePage } from '@/components/home-page';
+import { CVPage } from '@/components/cv-page';
 
 const slides: Spiral3DSlide[] = [
   { src: photo1, alt: "Personal Photo 1" },
@@ -21,8 +23,8 @@ const slides: Spiral3DSlide[] = [
 ];
 
 export function App() {
-  // User flow states: 'focused' -> 'hero' -> 'home'
-  const [pageState, setPageState] = useState<'focused' | 'hero' | 'home'>('focused');
+  // User flow states: 'focused' -> 'hero' -> 'home' -> 'cv'
+  const [pageState, setPageState] = useState<'focused' | 'hero' | 'home' | 'cv'>('focused');
 
   const handlePageClick = useCallback(() => {
     setPageState((prev) => {
@@ -60,19 +62,25 @@ export function App() {
     <>
       {/* VINTAGE ANTIQUE TOP NAVBAR (VISIBLE ON HOME PAGE ONLY) */}
       <VintageNavbar pageState={pageState} onNavigate={handleNavigateFromNavbar} />
+      
+      {/* VINTAGE CV BUTTON (VISIBLE ON HOME PAGE ONLY) */}
+      <VintageCVButton isVisible={pageState === 'home'} onClick={() => setPageState('cv')} />
 
       <main 
         data-narrator-section="home"
-        onClick={pageState !== 'home' ? handlePageClick : undefined}
+        onClick={(pageState !== 'home' && pageState !== 'cv') ? handlePageClick : undefined}
         className={`relative w-full min-h-screen bg-transparent ${
-          pageState !== 'home' ? 'cursor-pointer select-none overflow-hidden overflow-x-hidden' : ''
+          (pageState !== 'home' && pageState !== 'cv') ? 'cursor-pointer select-none overflow-hidden overflow-x-hidden' : ''
         }`}
       >
+        {/* CV Page */}
+        {pageState === 'cv' && <CVPage onBack={() => setPageState('home')} />}
+
         {/* Home Page — plain black background */}
         {pageState === 'home' && <HomePage />}
 
         {/* Hero & Focused View States */}
-        {pageState !== 'home' && (
+        {(pageState === 'focused' || pageState === 'hero') && (
           <>
             {/* 3D Spiral Slider (Fades out when focused) */}
             <div 

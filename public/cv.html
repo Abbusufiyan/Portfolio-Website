@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Abu Sufiyan — 3D Resume</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050506;--mute:#6c6c73;--hi:#c4c4c9;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:Inter,"Helvetica Neue",Arial,sans-serif}
+#stage{position:relative;width:100%;height:100%;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;background:radial-gradient(ellipse at 50% 45%,#101012 0%,#050506 75%)}
+.word{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:min(19vw,54vh);letter-spacing:-.05em;color:rgba(255,255,255,.085);filter:blur(2.5px);white-space:nowrap;pointer-events:none}
+canvas#gl{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;outline:none}
+.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 38%,rgba(0,0,0,.78) 100%)}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.08;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.hint{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom,0px));text-align:center;font-size:11px;letter-spacing:.22em;color:var(--mute);pointer-events:none}
+.hint b{color:var(--hi);font-weight:600}
+#fb{position:absolute;inset:0;display:none;align-items:center;justify-content:center}
+#fb img,#fb canvas{max-height:78%;max-width:84%;height:auto;width:auto}
+</style></head><body>
+<div id="stage"><div class="word" id="word"></div><canvas id="gl" aria-label="Abu Sufiyan interactive 3D resume"></canvas><div id="fb"></div><div class="vig"></div><div class="grain"></div>
+<div class="hint"><b>DRAG</b> TO TURN IT &nbsp;·&nbsp; <b>HOVER</b> TO LIGHT IT</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(()=>{
+// ---------- editable content ----------
+const CFG={word:'SUFIYAN',mark:'AS.',name:'Abu Sufiyan.',role:'Software Developer.',loc:'Bengaluru, India',tag:'RESUME',
+ summary:'A motivated Computer Science and Engineering student with hands-on experience building full-stack applications and interactive 3D web experiences. Interested in software development, problem-solving, and web performance optimization.',
+ contacts:[['Email','abbusufiyan753@gmail.com','mailto:abbusufiyan753@gmail.com'],['Phone','7204319471','tel:7204319471'],
+  ['LinkedIn','linkedin.com/in/abu-sufiyan-5b1934333','https://www.linkedin.com/in/abu-sufiyan-5b1934333/'],
+  ['GitHub','github.com/Abbusufiyan','https://github.com/Abbusufiyan'],
+  ['Portfolio','portfolio-website-ten-theta-96.vercel.app','https://portfolio-website-ten-theta-96.vercel.app/'],
+  ['LeetCode','leetcode.com/u/BUHw5Vatuj','https://leetcode.com/u/BUHw5Vatuj/']],
+ edu:[['BMS Institute of Technology and Management (BMSIT)','B.E. in Computer Science and Engineering  |  2024–2028'],
+  ['K.C.T Polytechnic, Gulbarga','Diploma in Computer Science and Engineering  |  2022–2024']],
+ skills:[['Languages','C++, JavaScript, TypeScript'],['Frontend','React.js, Tailwind CSS, Framer Motion'],['3D Development','Three.js, React Three Fiber'],
+  ['Backend','Node.js, Express.js, REST APIs'],['Database','MySQL'],['Tools','Git, GitHub, SonarQube'],
+  ['Fundamentals','Data Structures and Algorithms (DSA), Object-Oriented Programming (OOP)']],
+ projects:[
+  {t:'Aura — Music Streaming Application',tech:'React.js · JavaScript · Tailwind CSS · Node.js · Express.js · MySQL · REST APIs',
+   b:['Built a full-stack music streaming app with music browsing and playback in a modern dark interface.','Implemented authentication and MySQL integration for user and application data.','Integrated Google Drive-hosted audio streaming with interactive playback controls and shared player state.'],
+   l:'Live demo: ',d:'music-six-lemon.vercel.app',u:'https://music-six-lemon.vercel.app/'},
+  {t:'Interactive 3D Developer Portfolio',tech:'React.js · TypeScript · Three.js · React Three Fiber · Framer Motion · Tailwind CSS',
+   b:['Created immersive 3D scenes, animated transitions, and interactive WebGL-based experiences.','Built sections presenting technical skills, projects, background, and contact information.','Improved animation lifecycle and rendering behavior to limit unnecessary work from offscreen 3D components.'],
+   l:'Portfolio: ',d:'portfolio-website-ten-theta-96.vercel.app',u:'https://portfolio-website-ten-theta-96.vercel.app/'}]};
+document.getElementById('word').textContent=CFG.word;
+const PW=1200,PH=1600,FONT='Inter, "Helvetica Neue", Arial, sans-serif';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, coarse=matchMedia('(pointer: coarse)').matches;
+const mot=reduce?0:1;
+
+// ---------- paper typography (canvas textures) ----------
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function T(c,s,x,y,size,wt,col,al){c.font=wt+' '+size+'px '+FONT;c.fillStyle=col;c.textAlign=al||'left';c.fillText(s,x,y)}
+function surface(c,back,content){
+  c.setTransform(K,0,0,K,0,0);c.clearRect(0,0,PW,PH);c.save();
+  if(back){c.translate(PW,0);c.scale(-1,1)}
+  rr(c,0,0,PW,PH,28);c.clip();
+  let g=c.createLinearGradient(0,0,PW*.6,PH);g.addColorStop(0,'#2b2b2e');g.addColorStop(.5,'#1b1b1e');g.addColorStop(1,'#111113');
+  c.fillStyle=g;c.fillRect(0,0,PW,PH);
+  g=c.createLinearGradient(0,0,0,170);g.addColorStop(0,'rgba(255,255,255,.12)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(0,0,PW,170);
+  c.lineWidth=4;c.strokeStyle='rgba(255,255,255,.26)';rr(c,6,6,PW-12,PH-12,24);c.stroke();
+  c.lineWidth=3;c.strokeStyle='rgba(255,255,255,.20)';rr(c,34,34,PW-68,PH-68,22);c.stroke();
+  c.lineWidth=1.5;c.strokeStyle='rgba(255,255,255,.10)';rr(c,50,50,PW-100,PH-100,16);c.stroke();
+  content(c);c.restore();
+}
+const LINKS={front:[],back:[]};
+function wrap(c,s,w){const o=[];let l='';for(const wd of s.split(' ')){const t=l?l+' '+wd:wd;if(c.measureText(t).width>w&&l){o.push(l);l=wd}else l=t}if(l)o.push(l);return o}
+function lbl(c,s,x,y){if('letterSpacing' in c)c.letterSpacing='4px';T(c,s,x,y,26,700,'#9c9ca3');if('letterSpacing' in c)c.letterSpacing='0px'}
+function front(c){surface(c,false,c=>{
+  T(c,CFG.mark,100,196,96,800,'#f6f6f8');
+  T(c,CFG.name,96,420,112,700,'#ffffff');
+  T(c,CFG.role,98,510,50,600,'#a2a2a9');T(c,CFG.loc,98,578,50,600,'#a2a2a9');
+  c.font='400 34px '+FONT;wrap(c,CFG.summary,1000).forEach((s,i)=>T(c,s,98,740+i*52,34,400,'#d0d0d5'));
+  lbl(c,'CONTACT',98,1120);
+  CFG.contacts.forEach((r,i)=>{const y=1182+i*50;T(c,r[0],98,y,30,700,'#f4f4f6');T(c,r[1],290,y,30,400,'#cfcfd4');
+    const w=c.measureText(r[1]).width;c.fillStyle='rgba(207,207,212,.45)';c.fillRect(290,y+8,w,2);LINKS.front.push([98,y-30,192+w,46,r[2]])});
+  T(c,'Turn over for education, skills & projects',98,1496,24,400,'#85858c');
+  c.fillStyle='#a2a2a9';c.fillRect(1078,1150,16,2);
+  c.save();c.translate(1092,1215);c.rotate(Math.PI/2);if('letterSpacing' in c)c.letterSpacing='3px';T(c,CFG.tag,0,0,22,600,'#b8b8be');c.restore();
+})}
+function back(c){surface(c,true,c=>{
+  const X=96,Wd=1008;let y=110;
+  const head=s=>{lbl(c,s,X,y);c.fillStyle='rgba(255,255,255,.16)';c.fillRect(X,y+14,Wd,2);y+=44};
+  head('EDUCATION');
+  CFG.edu.forEach(e=>{T(c,e[0],X,y+8,33,700,'#ffffff');T(c,e[1],X,y+46,27,400,'#c2c2c8');y+=84});
+  y+=22;head('TECHNICAL SKILLS');
+  CFG.skills.forEach(r=>{T(c,r[0],X,y+8,27,700,'#f4f4f6');c.font='400 27px '+FONT;
+    const ls=wrap(c,r[1],Wd-250);ls.forEach((l,i)=>T(c,l,X+250,y+8+i*34,27,400,'#cbcbd0'));y+=ls.length*34+6});
+  y+=22;head('SELECTED PROJECTS');
+  CFG.projects.forEach(p=>{
+    T(c,p.t,X,y+8,34,700,'#ffffff');y+=40;
+    c.font='italic 400 23px '+FONT;c.fillStyle='#9a9aa2';c.textAlign='left';c.fillText(p.tech,X,y+8);y+=32;
+    p.b.forEach(b=>{c.font='400 28px '+FONT;const ls=wrap(c,b,Wd-28);T(c,'•',X,y+8,28,400,'#cbcbd0');
+      ls.forEach((l,i)=>T(c,l,X+28,y+8+i*34,28,400,'#cbcbd0'));y+=ls.length*34+6});
+    T(c,p.l,X,y+8,27,400,'#9a9aa2');const lw=c.measureText(p.l).width;T(c,p.d,X+lw,y+8,27,600,'#f0f0f3');
+    const dw=c.measureText(p.d).width;c.fillStyle='rgba(240,240,243,.5)';c.fillRect(X+lw,y+16,dw,2);
+    LINKS.back.push([X,y-22,lw+dw,44,p.u]);y+=46;
+  });
+})}
+const fC=document.createElement('canvas'),bC=document.createElement('canvas');const K=coarse?1.4:1.8;fC.width=bC.width=Math.round(PW*K);fC.height=bC.height=Math.round(PH*K);
+const drawAll=()=>{LINKS.front.length=LINKS.back.length=0;front(fC.getContext('2d'));back(bC.getContext('2d'))};drawAll();
+
+const stage=document.getElementById('stage'),cv=document.getElementById('gl'),fb=document.getElementById('fb');
+function fallback(){cv.style.display='none';fb.style.display='flex';fb.appendChild(fC);}
+let R;try{R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:'high-performance'})}catch(e){fallback();return}
+
+// ---------- scene ----------
+R.outputEncoding=THREE.sRGBEncoding;R.setClearColor(0x000000,0);
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,.1,50);
+const aniso=Math.min(8,R.capabilities.getMaxAnisotropy());
+const mkTex=cn=>{const t=new THREE.CanvasTexture(cn);t.encoding=THREE.sRGBEncoding;t.anisotropy=aniso;return t};
+const tF=mkTex(fC),tB=mkTex(bC);
+// paper grain / fibre bump
+const nC=document.createElement('canvas');nC.width=nC.height=1024;{const c=nC.getContext('2d'),id=c.createImageData(1024,1024);
+  for(let i=0;i<id.data.length;i+=4){const v=118+Math.random()*30;id.data[i]=id.data[i+1]=id.data[i+2]=v;id.data[i+3]=255}
+  c.putImageData(id,0,0);c.strokeStyle='rgba(255,255,255,.05)';for(let i=0;i<500;i++){c.beginPath();const x=Math.random()*1024,y=Math.random()*1024,a=Math.random()*6.28;c.moveTo(x,y);c.lineTo(x+Math.cos(a)*40,y+Math.sin(a)*40);c.stroke()}}
+const tN=new THREE.CanvasTexture(nC);
+const mk=(t,side)=>new THREE.MeshStandardMaterial({map:t,emissiveMap:t,emissive:0xffffff,emissiveIntensity:.62,roughness:.6,metalness:.1,bumpMap:tN,bumpScale:.22,side,transparent:true,opacity:.96});
+const SX=40,SY=56,GW=3,GH=4;
+const geo=new THREE.PlaneGeometry(GW,GH,SX,SY),pos=geo.attributes.position,cnt=pos.count;
+const U=new Float32Array(cnt),V=new Float32Array(cnt);for(let i=0;i<cnt;i++){U[i]=pos.getX(i)/(GW/2);V[i]=pos.getY(i)/(GH/2)}
+const frontM=new THREE.Mesh(geo,mk(tF,THREE.FrontSide)),backM=new THREE.Mesh(geo,mk(tB,THREE.BackSide));backM.position.z=-.024;
+// edge wall (paper thickness)
+const ring=[];for(let c=0;c<=SX;c++)ring.push(c);for(let r=1;r<=SY;r++)ring.push(r*(SX+1)+SX);
+for(let c=SX-1;c>=0;c--)ring.push(SY*(SX+1)+c);for(let r=SY-1;r>=1;r--)ring.push(r*(SX+1));
+const N=ring.length,wGeo=new THREE.BufferGeometry(),wPos=new Float32Array(N*6),wIdx=[];
+for(let i=0;i<N;i++){const b=(i+1)%N;wIdx.push(i,N+i,b,b,N+i,N+b)}
+wGeo.setAttribute('position',new THREE.BufferAttribute(wPos,3));wGeo.setIndex(wIdx);
+const wallM=new THREE.Mesh(wGeo,new THREE.MeshStandardMaterial({color:0x3a3a3f,roughness:.32,metalness:.75,side:THREE.DoubleSide}));
+const paper=new THREE.Group();paper.rotation.order='YXZ';paper.add(frontM,backM,wallM);scene.add(paper);
+// soft halo shadow
+const sC=document.createElement('canvas');sC.width=sC.height=256;{const c=sC.getContext('2d'),g=c.createRadialGradient(128,128,10,128,128,128);g.addColorStop(0,'rgba(0,0,0,.85)');g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,256,256)}
+const tS=new THREE.CanvasTexture(sC),shM=new THREE.MeshBasicMaterial({map:tS,transparent:true,depthWrite:false,opacity:.75});
+const shadow=new THREE.Mesh(new THREE.PlaneGeometry(5,6.2),shM);shadow.position.z=-.7;scene.add(shadow);
+// lights
+const key=new THREE.DirectionalLight(0xffffff,1.05);key.position.set(-3,4,4);
+const rim=new THREE.DirectionalLight(0xdfe6ff,1.4);rim.position.set(4,3,-2.5);
+const rim2=new THREE.DirectionalLight(0xffffff,.7);rim2.position.set(-4,-1,-2);
+const hemi=new THREE.HemisphereLight(0x8a8a96,0x050506,.4);
+const cur=new THREE.PointLight(0xffffff,0,8,2);cur.position.set(0,0,1.4);
+scene.add(key,rim,rim2,hemi,cur);
+
+// ---------- state & interaction ----------
+const S={rx:0,ry:0,vx:0,vy:0,px:0,py:0,tpx:0,tpy:0,bx:0,by:0,bvx:0,bvy:0,drag:false,lx:0,ly:0,lt:0,hov:0,thov:0};
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t;
+function setPtr(e){const r=cv.getBoundingClientRect();S.tpx=cl((e.clientX-r.left)/r.width*2-1,-1,1);S.tpy=cl(-((e.clientY-r.top)/r.height*2-1),-1,1);S.thov=1}
+cv.addEventListener('pointerdown',e=>{S.sx=e.clientX;S.sy=e.clientY;S.drag=true;S.lx=e.clientX;S.ly=e.clientY;S.lt=e.timeStamp;S.vx=S.vy=0;try{cv.setPointerCapture(e.pointerId)}catch(_){}cv.style.cursor='grabbing';setPtr(e);e.preventDefault()});
+cv.addEventListener('pointermove',e=>{setPtr(e);if(!S.drag){cv.style.cursor=linkAt(e)?'pointer':'grab';return}
+  const dx=e.clientX-S.lx,dy=e.clientY-S.ly,dt=Math.max((e.timeStamp-S.lt)/1000,.008);S.lx=e.clientX;S.ly=e.clientY;S.lt=e.timeStamp;
+  const a=dx*.0085,b=dy*.0065;S.ry=cl(S.ry+a,-Math.PI*1.1,Math.PI*1.1);S.rx=cl(S.rx+b,-.6,.6);
+  S.vy=cl(lerp(S.vy,a/dt,.5),-10,10);S.vx=cl(lerp(S.vx,b/dt,.5),-6,6)});
+const rc=new THREE.Raycaster(),nd=new THREE.Vector2();
+function linkAt(e){const r=cv.getBoundingClientRect();nd.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height*2-1));rc.setFromCamera(nd,cam);
+  paper.updateMatrixWorld(true);const h=rc.intersectObjects([frontM,backM])[0];if(!h||!h.uv)return null;
+  const F=h.object===frontM,x=F?h.uv.x*PW:PW-h.uv.x*PW,y=(1-h.uv.y)*PH;
+  for(const L of LINKS[F?'front':'back'])if(x>=L[0]&&x<=L[0]+L[2]&&y>=L[1]&&y<=L[1]+L[3])return L[4];return 'CARD_HIT'}
+function openU(u){if(/^(mailto|tel):/.test(u)){const a=document.createElement('a');a.href=u;a.click()}else window.open(u,'_blank','noopener')}
+const end=e=>{if(S.drag&&e&&e.type==='pointerup'&&Math.hypot(e.clientX-S.sx,e.clientY-S.sy)<6){const u=linkAt(e);if(u==='CARD_HIT'){const a=document.createElement('a');a.href='/Abu_Sufiyan_Resume.pdf';a.download='Abu_Sufiyan_Resume.pdf';a.click()}else if(u)openU(u)}
+  if(!S.drag)return;S.drag=false;cv.style.cursor='grab';if(e&&e.pointerType==='touch'){S.thov=0;S.tpx=S.tpy=0}if(reduce){S.vx=S.vy=0}};
+['pointerup','pointercancel','lostpointercapture'].forEach(n=>cv.addEventListener(n,end));
+cv.addEventListener('pointerleave',()=>{if(!S.drag){S.thov=0;S.tpx=S.tpy=0}});
+['dragstart','selectstart','contextmenu'].forEach(n=>cv.addEventListener(n,e=>e.preventDefault()));
+
+function size(){const w=stage.clientWidth||1,h=stage.clientHeight||1;
+  R.setPixelRatio(Math.min(window.devicePixelRatio||1,coarse?1.75:2));R.setSize(w,h,false);
+  cam.aspect=w/h;const th=Math.tan(cam.fov*Math.PI/360);
+  cam.position.set(0,0,Math.max(4.2/(2*th*.9),3.3/(2*th*cam.aspect*.95)));cam.lookAt(0,0,0);cam.updateProjectionMatrix();draw()}
+const ro=new ResizeObserver(size);ro.observe(stage);
+
+// ---------- frame ----------
+let t=0,prev=0,raf=0,vis=true,hid=false;
+function draw(){R.render(scene,cam)}
+function frame(now){raf=0;if(!vis||hid)return;
+  const dt=Math.min((now-prev)/1000,.05)||.016;prev=now;t+=dt;const d=k=>1-Math.exp(-k*dt);
+  if(!S.drag){
+    S.ry+=S.vy*dt;S.rx+=S.vx*dt;const f=Math.exp(-(reduce?7:2.6)*dt);S.vy*=f;S.vx*=f;
+    if(Math.abs(S.vy)<1.6){const tg=Math.round(S.ry/Math.PI)*Math.PI;S.ry+=(tg-S.ry)*d(2.4)}
+    S.rx+=(0-S.rx)*d(2.2);
+    if(Math.abs(S.ry)>Math.PI*1.1){S.ry=cl(S.ry,-Math.PI*1.1,Math.PI*1.1);S.vy=0}
+    if(Math.abs(S.rx)>.6){S.rx=cl(S.rx,-.6,.6);S.vx=0}
+  }
+  S.px+=(S.tpx-S.px)*d(5);S.py+=(S.tpy-S.py)*d(5);S.hov+=(S.thov-S.hov)*d(4);
+  const face=Math.cos(S.ry),hm=reduce?.4:1;
+  paper.rotation.set(S.rx+Math.sin(t*.27+1)*.025*mot-face*S.py*.14*hm,S.ry+Math.sin(t*.35)*.05*mot+face*S.px*.2*hm,Math.sin(t*.2)*.008*mot);
+  paper.position.y=Math.sin(t*.7)*.05*mot;shadow.position.set(-S.ry*.05+.12,paper.position.y-.14,-.7);
+  // bend springs
+  const tbx=S.drag?cl(S.vy*.09,-1,1):0,tby=S.drag?cl(-S.vx*.09,-1,1):0;
+  S.bvx+=((tbx+S.px*.18)-S.bx)*70*dt-S.bvx*10*dt;S.bx+=S.bvx*dt;
+  S.bvy+=((tby+S.py*.14)-S.by)*70*dt-S.bvy*10*dt;S.by+=S.bvy*dt;
+  const sh=S.px*S.py*.5,fl=.012*mot*(1+Math.min(1,Math.hypot(S.vx,S.vy)*.1));
+  for(let i=0;i<cnt;i++){const u=U[i],v=V[i];
+    const v2=v<0?v*v:0;
+    pos.setZ(i,.05*u*u*(.6+.4*v)+.018*Math.sin(u*2.4+1)*Math.pow(Math.abs(v),2.5)-.04*v2
+      +S.bx*.55*(u*u-.4)+S.by*.5*(v*v-.4)+sh*.3*u*v+fl*Math.sin(t*.9+u*2.1+v*1.7))}
+  pos.needsUpdate=true;geo.computeVertexNormals();
+  for(let i=0;i<N;i++){const p=ring[i],x=pos.getX(p),y=pos.getY(p),z=pos.getZ(p);
+    wPos[i*3]=x;wPos[i*3+1]=y;wPos[i*3+2]=z;wPos[(N+i)*3]=x;wPos[(N+i)*3+1]=y;wPos[(N+i)*3+2]=z-.024}
+  wGeo.attributes.position.needsUpdate=true;wGeo.computeVertexNormals();
+  rim.intensity=1.2+.9*Math.abs(Math.sin(S.ry+S.px*.5));rim2.intensity=.5+.5*Math.abs(Math.sin(S.ry*.5+S.py));
+  cur.position.set(S.px*2.3,S.py*3,1.5);cur.intensity=.35+3.2*S.hov;
+  draw();raf=requestAnimationFrame(frame)}
+function sync(){if(vis&&!hid&&!raf){prev=performance.now();raf=requestAnimationFrame(frame)}}
+const io=new IntersectionObserver(es=>{vis=es[0].isIntersecting;sync()});io.observe(stage);
+const vc=()=>{hid=document.hidden;sync()};document.addEventListener('visibilitychange',vc);
+cv.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf);raf=0});
+cv.addEventListener('webglcontextrestored',()=>{[tF,tB,tN,tS].forEach(x=>x.needsUpdate=true);sync()});
+Promise.all(['800 60px Inter','700 40px Inter','600 40px Inter','400 30px Inter'].map(f=>document.fonts.load(f))).then(()=>{drawAll();tF.needsUpdate=tB.needsUpdate=true}).catch(()=>{});
+function dispose(){cancelAnimationFrame(raf);raf=0;ro.disconnect();io.disconnect();document.removeEventListener('visibilitychange',vc);
+  [geo,wGeo,shadow.geometry].forEach(g=>g.dispose());[frontM.material,backM.material,wallM.material,shM].forEach(m=>m.dispose());
+  [tF,tB,tN,tS].forEach(x=>x.dispose());R.dispose();R.forceContextLoss()}
+addEventListener('pagehide',dispose);
+size();sync();
+})();
+</script></body></html>

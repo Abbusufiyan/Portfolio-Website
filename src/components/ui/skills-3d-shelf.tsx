@@ -722,6 +722,7 @@ export function Skills3DShelfComponent() {
     <section
       id="skills"
       data-narrator-section="skills"
+      data-lenis-prevent="true"
       ref={containerRef}
       className="relative bg-transparent text-white font-sans overflow-hidden min-h-screen h-screen flex flex-col justify-center"
     >
